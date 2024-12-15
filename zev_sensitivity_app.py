@@ -196,7 +196,6 @@ def calculate_uncertainty_metrics(data):
     
     return {
         'mean': mean_val,
-        'std': std_val,
         'cv': cv,
     
     }
@@ -253,7 +252,7 @@ def main():
         final_year = results_df[results_df['Year'] == projection_year]
         metrics = calculate_uncertainty_metrics(final_year['BEV_Count'])
         
-        col1, col2, col3 = st.columns(3)
+        col1, col2 = st.columns(2)
         
         with col1:
             st.metric(
@@ -263,12 +262,6 @@ def main():
             )
         
         with col2:
-            st.metric(
-                "95% Confidence Interval",
-                f"{metrics['ci_lower']:,.0f} - {metrics['ci_upper']:,.0f}"
-            )
-        
-        with col3:
             st.metric(
                 "Coefficient of Variation",
                 f"{metrics['cv']:.1f}%"
