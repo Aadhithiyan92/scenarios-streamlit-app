@@ -192,15 +192,13 @@ def calculate_uncertainty_metrics(data):
     mean_val = np.mean(data)
     std_val = np.std(data)
     cv = (std_val / mean_val) * 100
-    ci_lower = mean_val - 1.96 * std_val
-    ci_upper = mean_val + 1.96 * std_val
+    
     
     return {
         'mean': mean_val,
         'std': std_val,
         'cv': cv,
-        'ci_lower': ci_lower,
-        'ci_upper': ci_upper
+    
     }
 
 def main():
