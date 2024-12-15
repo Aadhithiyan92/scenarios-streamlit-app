@@ -145,8 +145,8 @@ try:
         scenario_params = base_params.copy()
         
         # Calculate budget effects
-        growth_scaling = 1 + (growth_ratio * 5e9/4e9) * 0.10
-        incentive_scaling = 1 + (incentive_ratio * 5e9/4e9) * 0.15
+        growth_scaling = 1 + (growth_ratio * 5e9/4e9) * 0.13
+        incentive_scaling = 1 + (incentive_ratio * 5e9/4e9) * 0.18
         
         # Modify parameters for scenario
         scenario_params['r2'] *= growth_scaling
