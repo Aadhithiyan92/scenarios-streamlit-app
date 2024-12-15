@@ -133,7 +133,7 @@ def incentive_time_effect(t, start_year, end_year, incentive_type, decay_rate):
         return np.exp(-decay_rate * (year - start_year))
     return 0
 
-def run_scenario(base_params, incentive_ratio, growth_ratio, total_budget=5e9, years=4):
+def run_scenario(base_params, incentive_ratio, growth_ratio, total_budget=1e9, years=4):
     """Run a scenario with two stages: historical and future"""
     scenario_params = base_params.copy()
     
