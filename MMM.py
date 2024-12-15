@@ -8,11 +8,23 @@ from scipy.integrate import solve_ivp
 # Set page config
 st.set_page_config(layout="wide", page_title="BEV Adoption Analysis with RMSE")
 
+import os
+st.write("Current directory files:", os.listdir())
+
 # Load data
 @st.cache_data
 def load_data():
-    data = pd.read_excel('C:/Users/as3889/Desktop/ZEVdata.xlsx')
-    return data
+    if "ZEVdata.xlsx" in os.listdir():
+        data = pd.read_excel("ZEVdata.xlsx")
+        return data
+    else:
+        st.error("ZEVdata.xlsx not found in the directory.")
+        return None
+
+data = load_data()
+if data is not None:
+    st.write(data.head())  # Display the first rows of the file to confirm
+
 
 try:
     data = load_data()
