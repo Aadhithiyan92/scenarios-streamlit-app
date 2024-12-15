@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Load your data (adjust the path as needed)
-data = pd.read_excel('C:/Users/as3889/Desktop/ZEVdata.xlsx')
+data = pd.read_excel("ZEVdata.xlsx")
 years = data['Year'].values
 V_ICE_data = data['V'].values
 V_BEV_data = data['BEV'].values
