@@ -177,7 +177,6 @@ def create_incentive_sensitivity_params():
         'Moderate Incentives (-10%)': 0.90,
         'Base Incentives': 1.0,
         'High Incentives (+10%)': 1.10,
-        'Very High Incentives (+20%)': 1.20
     }
     
     sensitivity_params = {}
