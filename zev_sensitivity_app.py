@@ -189,6 +189,7 @@ def calculate_uncertainty_metrics(data):
 def main():
     st.title('BEV Adoption Sensitivity Analysis')
     
+    # Sidebar with only essential controls
     with st.sidebar:
         st.markdown("### Analysis Controls")
         st.markdown("---")
@@ -204,12 +205,12 @@ def main():
         )
     
     try:
-        # Generate scenarios
+        # Generate scenarios (always set CVRP to end in 2023)
         sensitivity_params = create_sensitivity_params(
             'growth' if analysis_type == 'Growth Rate' else 'incentive'
         )
         
-          scenarios = {}
+        scenarios = {}
         for name, params_set in sensitivity_params.items():
             # Hardcode CVRP end year to 2023
             params_set['cvrp_end_year'] = 2023
