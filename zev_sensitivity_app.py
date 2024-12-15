@@ -199,8 +199,6 @@ def create_growth_sensitivity_params():
     # Base parameters
     base_params = params.copy()
     base_r2 = 0.4272847858514477  # BEV
-    base_r3 = 0.11                # PHEV
-    base_r4 = 0.14351479815351475 # FCEV
     
     variations = {
         'Low Growth (-10%)': 0.90,
@@ -215,8 +213,6 @@ def create_growth_sensitivity_params():
         params_variation = base_params.copy()
         params_variation.update({
             'r2': base_r2 * factor,
-            'r3': base_r3 * factor,
-            'r4': base_r4 * factor
         })
         sensitivity_params[variation_name] = params_variation
     
@@ -240,14 +236,6 @@ def analyze_sensitivity_results(scenarios, analysis_type):
                 'Year': year,
                 'BEV_Count': data['BEV'][year_idx],
                 'BEV_Percent': data['BEV'][year_idx]/total*100,
-                'PHEV_Count': data['PHEV'][year_idx],
-                'PHEV_Percent': data['PHEV'][year_idx]/total*100,
-                'FCEV_Count': data['FCEV'][year_idx],
-                'FCEV_Percent': data['FCEV'][year_idx]/total*100,
-                'Total_ZEV': total_zev,
-                'ZEV_Percent': total_zev/total*100,
-                'ICE_Count': data['ICE'][year_idx],
-                'ICE_Percent': data['ICE'][year_idx]/total*100
             }
             results_list.append(row_dict)
     
