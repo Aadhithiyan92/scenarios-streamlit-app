@@ -16,43 +16,29 @@ st.set_page_config(
 )
 
 # Custom CSS
-st.markdown("""
-    <style>
-    .main {
-        padding: 2rem;
-    }
-    .stMetric {
-        background-color: #f0f2f6;
-        padding: 1rem;
-        border-radius: 0.5rem;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .stAlert {
-        padding: 1rem;
-        margin: 1rem 0;
-        border-radius: 0.5rem;
-    }
-    h1 {
-        color: #1f77b4;
-        text-align: center;
-        padding: 1rem;
-        background: linear-gradient(90deg, #f8f9fa 0%, #e9ecef 100%);
-        border-radius: 0.5rem;
-        margin-bottom: 2rem;
-    }
-    h2 {
-        color: #2c3e50;
-        border-bottom: 2px solid #eee;
-        padding-bottom: 0.5rem;
-    }
-    .stSelectbox {
-        background-color: white;
-        border-radius: 0.5rem;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-    </style>
-""", unsafe_allow_html=True)
-
+# Update the title in the main function
+def main():
+    st.title('BEV Adoption Sensitivity Analysis')
+    
+    # Update the CSS styling for the new title
+    st.markdown("""
+        <style>
+        .main {
+            padding: 2rem;
+        }
+        h1 {
+            color: #1f77b4;
+            text-align: center;
+            padding: 1rem;
+            background: linear-gradient(90deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+    
+    
 # Load data
 data = pd.read_excel("ZEVdata.xlsx")
 years = data['Year'].values
@@ -201,7 +187,7 @@ def calculate_uncertainty_metrics(data):
     }
 
 def main():
-    st.title('🚗 BEV Adoption Analysis Dashboard')
+    st.title('BEV Adoption Sensitivity Analysis')
     
     with st.sidebar:
         st.markdown("### Analysis Controls")
