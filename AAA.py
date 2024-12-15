@@ -10,7 +10,7 @@ import plotly.express as px
 st.set_page_config(layout="wide", page_title="BEV Adoption Strategy Analysis")
 
 # Load data
-data = pd.read_excel('C:/Users/as3889/Desktop/ZEVdata.xlsx')
+data = pd.read_excel("ZEVdata.xlsx")
 years = data['Year'].values
 V_ICE_data = data['V'].values
 V_BEV_data = data['BEV'].values
