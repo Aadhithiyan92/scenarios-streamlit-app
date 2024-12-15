@@ -208,8 +208,7 @@ def create_growth_sensitivity_params():
         'Moderate Growth (-5%)': 0.95,
         'Base Growth': 1.0,
         'High Growth (+5%)': 1.05,
-        'Very High Growth (+10%)': 1.10
-    }
+     }
     
     sensitivity_params = {}
     
