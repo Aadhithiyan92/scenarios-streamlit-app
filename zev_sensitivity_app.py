@@ -173,11 +173,11 @@ def create_sensitivity_params(param_type='growth'):
         param_key = 'k_C'
     
     variations = {
-        'Very Low (-20%)': 0.8,
+       
         'Low (-10%)': 0.9,
         'Base': 1.0,
         'High (+10%)': 1.1,
-        'Very High (+20%)': 1.2
+        
     }
     
     sensitivity_params = {}
