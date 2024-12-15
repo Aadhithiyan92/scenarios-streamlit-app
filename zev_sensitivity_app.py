@@ -202,11 +202,6 @@ def main():
             'Projection Year',
             2023, 2030, 2027
         )
-        
-        cvrp_continues = st.checkbox(
-            'Continue CVRP after 2023',
-            True
-        )
     
     try:
         # Generate scenarios
@@ -214,9 +209,10 @@ def main():
             'growth' if analysis_type == 'Growth Rate' else 'incentive'
         )
         
-        scenarios = {}
+          scenarios = {}
         for name, params_set in sensitivity_params.items():
-            params_set['cvrp_end_year'] = projection_year if cvrp_continues else 2023
+            # Hardcode CVRP end year to 2023
+            params_set['cvrp_end_year'] = 2023
             years, ice, bev = project_ev_adoption(projection_year, params_set)
             scenarios[name] = {'years': years, 'BEV': bev}
         
