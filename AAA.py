@@ -197,9 +197,7 @@ def run_scenario(base_params, incentive_ratio, growth_ratio, total_budget=5e9, y
 # Define scenarios
 scenarios = [
     ("70-30 Growth Focus", 0.3, 0.7),
-    ("70-30 Incentive Focus", 0.7, 0.3),
-    ("60-40 Incentive Focus", 0.7, 0.3),
-    ("60-40 Growth Focus", 0.3, 0.7)
+    ("70-30 Incentive Focus", 0.7, 0.3)
 ]
 
 st.title("Strategic Analysis of $5B Budget Allocation for BEV Adoption in California (2024-2027)")
