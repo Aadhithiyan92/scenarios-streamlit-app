@@ -85,7 +85,7 @@ params = {
     'lambda_S': 0.004719196117653555,
     'omega': 0.0773179311036966,
     'tau': 0.04,
-    'cvrp_end_year': 2023
+    'cvrp_end_year': 2027
 }
 
 def system(t, X, params):
