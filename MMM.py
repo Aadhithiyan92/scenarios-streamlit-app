@@ -192,7 +192,7 @@ try:
         bev_historical = solution_historical.y[1] * V_BEV_mean
         bev_future = solution_future.y[1] * V_BEV_mean
         years_historical = np.array([2010 + t for t in solution_historical.t])
-        years_future = np.array([2010 + t for t in solution_future.t])
+        years_future = np.array([2024 + t for t in solution_future.t])
         
         # Generate error simulations for future period
         n_simulations = 1000
