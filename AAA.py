@@ -198,8 +198,8 @@ def run_scenario(base_params, incentive_ratio, growth_ratio, total_budget=5e9, y
 scenarios = [
     ("70-30 Growth Focus", 0.3, 0.7),
     ("70-30 Incentive Focus", 0.7, 0.3),
-    ("70-30 Growth Focus", 0.4, 0.6),
-    ("70-30 Incentive Focus", 0.6, 0.4),
+    ("60-40 Growth Focus", 0.4, 0.6),
+    ("60-40 Incentive Focus", 0.6, 0.4),
     ("50-50 Growth Focus", 0.5, 0.5),
     
 ]
