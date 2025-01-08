@@ -177,12 +177,12 @@ try:
         )
         
         # Then solve future period (2024-2027)
-        X0_2010 = [x[-1] for x in solution_historical.y]
+        X0_2024 = [x[-1] for x in solution_historical.y]
         t_eval_future = np.linspace(0, 4, 4*12+1)
         solution_future = solve_ivp(
             system,
             (0, 4),
-            X0_2010,
+            X0_2024,
             args=(scenario_params,),
             t_eval=t_eval_future,
             method='RK45'
@@ -192,7 +192,7 @@ try:
         bev_historical = solution_historical.y[1] * V_BEV_mean
         bev_future = solution_future.y[1] * V_BEV_mean
         years_historical = np.array([2010 + t for t in solution_historical.t])
-        years_future = np.array([2024 + t for t in solution_future.t])
+        years_future = np.array([2010 + t for t in solution_future.t])
         
         # Generate error simulations for future period
         n_simulations = 1000
