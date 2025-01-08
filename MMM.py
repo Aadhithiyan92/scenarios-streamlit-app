@@ -177,12 +177,12 @@ try:
         )
         
         # Then solve future period (2024-2027)
-        X0_2024 = [x[-1] for x in solution_historical.y]
+        X0_2010 = [x[-1] for x in solution_historical.y]
         t_eval_future = np.linspace(0, 4, 4*12+1)
         solution_future = solve_ivp(
             system,
             (0, 4),
-            X0_2024,
+            X0_2010,
             args=(scenario_params,),
             t_eval=t_eval_future,
             method='RK45'
