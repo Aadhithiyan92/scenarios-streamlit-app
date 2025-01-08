@@ -152,6 +152,8 @@ try:
         scenario_params['r2'] *= growth_scaling
         scenario_params['k_C'] *= incentive_scaling
         scenario_params['k_V'] *= incentive_scaling
+        scenario_params['k_A'] *= incentive_scaling
+        scenario_params['k_D'] *= incentive_scaling
         scenario_params['beta1'] *= incentive_scaling
         
         # Initial conditions from 2010
