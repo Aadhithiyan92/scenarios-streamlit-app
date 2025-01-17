@@ -1,107 +1,149 @@
 import streamlit as st
 
+# 1) Inject custom CSS to style the page.
 def inject_custom_css():
-    """
-    Injects custom CSS into the Streamlit app to simulate Tailwind-like styles.
-    """
     st.markdown(
         """
         <style>
-        /* Basic reset for body background */
+        /* Global body style */
         body {
-            background-color: #F3F4F6; /* Tailwind gray-100 */
-            margin: 0; 
+            margin: 0;
+            padding: 0;
+            background-color: #F9FAFB; /* Light gray background */
+        }
+
+        /* Remove default Streamlit padding */
+        .main .block-container {
+            padding: 0 !important;
+        }
+
+        /* Top bar container */
+        .top-bar {
+            background: linear-gradient(to right, #3B82F6, #2563EB); /* Tailwind blues */
+            color: white;
+            padding: 1.5rem;
+            border-radius: 0 0 8px 8px;
+            margin-bottom: 1rem;
+        }
+        .top-bar h1 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+        .top-bar p {
+            margin: 0;
+            color: #DBEAFE; /* lighter text */
+        }
+
+        /* Layout container for the sidebar and main content */
+        .layout-container {
+            display: flex;
+        }
+
+        /* Custom sidebar styling */
+        .sidebar-container {
+            width: 220px;
+            background-color: #FFFFFF;
+            border-right: 1px solid #E5E7EB;
+            min-height: calc(100vh - 80px); /* minus top bar */
+            padding-top: 1rem;
+        }
+
+        /* Remove default Streamlit sidebar */
+        section[data-testid="stSidebar"] {
+            display: none;
+        }
+
+        /* Sidebar nav items container */
+        .nav-list {
+            list-style-type: none;
             padding: 0;
         }
-
-        /* Top bar / header */
-        .my-top-bar {
-            background: linear-gradient(to right, #2563EB, #1E40AF); /* Tailwind blues */
-            color: white;
-            padding: 20px;
-            border-radius: 5px;
-            margin-bottom: 20px;
+        .nav-item {
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            color: #4B5563; /* Gray-600 */
+            transition: background-color 0.2s;
         }
-        .my-top-bar h1 {
-            margin-bottom: 0;
-            font-size: 2rem;
+        .nav-item:hover {
+            background-color: #F3F4F6; /* Gray-100 */
         }
-        .my-top-bar p {
-            margin: 0;
-            font-size: 1rem;
-            color: #93C5FD; /* lighter text */
+        .nav-item.active {
+            background-color: #2563EB; /* Blue-600 */
+            color: white !important;
         }
 
-        /* Card-like container */
-        .my-card {
-            background-color: #FFFFFF;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        /* Sub-headers in content */
-        .section-title {
-            font-size: 1.5rem;
-            color: #1E3A8A; /* Tailwind blue-800 */
-            margin-bottom: 0.5rem;
-            font-weight: bold;
-        }
-
-        /* Example color classes from Tailwind, simplified */
-        .bg-blue-50 {
-            background-color: #EFF6FF; 
-            padding: 20px;
-            border-radius: 10px;
-        }
-        .bg-green-50 {
-            background-color: #ECFDF5;
-            padding: 20px;
-            border-radius: 10px;
-        }
-        .text-blue-800 {
-            color: #1E3A8A;
-        }
-        .text-green-800 {
-            color: #065F46;
-        }
-
-        /* Slightly styled list */
-        .custom-list li {
-            margin-bottom: 0.5rem;
-        }
-
-        /* A 'card row' container for multi-column layout if you want custom styling */
-        .card-row {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-        .card {
+        /* Main content area */
+        .main-content {
             flex: 1;
-            min-width: 250px;
+            padding: 1rem 2rem; 
+        }
+
+        /* Section titles (blue) */
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1E3A8A; /* Blue-800 */
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Card-like containers */
+        .card {
             background-color: #FFFFFF;
             border-radius: 8px;
+            padding: 1rem 1.5rem;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            padding: 15px;
+            margin-bottom: 1rem;
+        }
+        .card h3 {
+            margin-top: 0;
+        }
+        .card-list {
+            list-style-type: none;
+            padding-left: 1.5rem;
+        }
+        .card-list li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Some color utility classes (approx. Tailwind) */
+        .bg-blue-50 { background-color: #EFF6FF; }
+        .bg-green-50 { background-color: #ECFDF5; }
+        .bg-yellow-50 { background-color: #FFFBEB; }
+        .bg-red-50 { background-color: #FEF2F2; }
+
+        .text-blue-800 { color: #1E3A8A; }
+        .text-green-800 { color: #065F46; }
+        .text-yellow-800 { color: #854D0E; }
+        .text-red-800 { color: #7F1D1D; }
+
+        /* Headings inside cards */
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
         }
         </style>
         """,
         unsafe_allow_html=True
     )
 
+# 2) Our main app function
 def main():
-    # Configure basic page settings
     st.set_page_config(page_title="Environmental-Economic Sensitivity Analysis", layout="wide")
-    
-    # Inject the custom CSS
     inject_custom_css()
 
-    # Top Bar / Header
+    # We'll track the selected page in st.session_state
+    if "selected_page" not in st.session_state:
+        st.session_state.selected_page = "Overview"
+
+    # 2A) Top bar
     st.markdown(
         """
-        <div class="my-top-bar">
+        <div class="top-bar">
             <h1>Environmental-Economic Sensitivity Analysis</h1>
             <p>US Regional Semiconductor Supply Chain Dynamics</p>
         </div>
@@ -109,226 +151,335 @@ def main():
         unsafe_allow_html=True
     )
 
-    # Sidebar menu
-    menu = ["Overview", "Methodology", "Regions", "Data", "Equations", "Results"]
-    choice = st.sidebar.radio("Sections", menu)
+    # 2B) Body layout: custom 'layout-container' with a custom "sidebar" div plus main content
+    st.markdown('<div class="layout-container">', unsafe_allow_html=True)
 
-    # Render chosen section
-    if choice == "Overview":
+    # Sidebar
+    st.markdown('<div class="sidebar-container">', unsafe_allow_html=True)
+    render_sidebar()
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    # Main Content
+    st.markdown('<div class="main-content">', unsafe_allow_html=True)
+    render_page(st.session_state.selected_page)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+
+# 3) Render the custom sidebar
+def render_sidebar():
+    pages = ["Overview", "Methodology", "Regions", "Data", "Equations", "Results"]
+
+    st.markdown('<ul class="nav-list">', unsafe_allow_html=True)
+    for page in pages:
+        # Check if this page is currently active
+        active_class = "active" if page == st.session_state.selected_page else ""
+        sidebar_item = f"""
+        <li class="nav-item {active_class}" onClick="window.location.href='?selected_page={page}'">
+            {page}
+        </li>
+        """
+        st.markdown(sidebar_item, unsafe_allow_html=True)
+    st.markdown('</ul>', unsafe_allow_html=True)
+
+# 4) Based on selected_page, display the appropriate section
+def render_page(page):
+    # When a nav item is clicked, we get a query param '?selected_page=PageName'
+    # Let's read that param to update session_state
+    query_params = st.experimental_get_query_params()
+    if "selected_page" in query_params:
+        st.session_state.selected_page = query_params["selected_page"][0]
+
+    if page == "Overview":
         overview_section()
-    elif choice == "Methodology":
+    elif page == "Methodology":
         methodology_section()
-    elif choice == "Regions":
+    elif page == "Regions":
         regions_section()
-    elif choice == "Data":
+    elif page == "Data":
         data_section()
-    elif choice == "Equations":
+    elif page == "Equations":
         equations_section()
-    elif choice == "Results":
+    elif page == "Results":
         results_section()
 
 def overview_section():
-    st.markdown('<div class="my-card">', unsafe_allow_html=True)
+    st.markdown('<div class="card">', unsafe_allow_html=True)
     st.markdown('<div class="section-title">Research Overview</div>', unsafe_allow_html=True)
-    st.write("""
-    This cutting-edge research investigates the complex dynamics between environmental 
-    sustainability and semiconductor supply chain resilience across key US manufacturing regions. 
-    Using advanced nonlinear dynamical systems analysis, we model the intricate relationships 
-    between water availability, energy transitions, and environmental regulations.
-    """)
+    st.write(
+        """
+        This cutting-edge research investigates the complex dynamics between environmental 
+        sustainability and semiconductor supply chain resilience across key US manufacturing regions. 
+        Using advanced nonlinear dynamical systems analysis, we model the intricate relationships 
+        between water availability, energy transitions, and environmental regulations.
+        """
+    )
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # Using columns for a two-column layout
+    # "Key Innovations" (blue) and "Expected Impact" (green) side by side using st.columns
     col1, col2 = st.columns(2)
 
     with col1:
-        st.markdown('<div class="my-card bg-blue-50">', unsafe_allow_html=True)
-        st.markdown('<div class="section-title text-blue-800">Key Innovations</div>', unsafe_allow_html=True)
-        st.markdown('<ul class="custom-list"><li>Nonlinear coupling of environmental-economic factors</li><li>Regional sensitivity analysis framework</li><li>Critical threshold identification methods</li></ul>', unsafe_allow_html=True)
+        st.markdown('<div class="card bg-blue-50">', unsafe_allow_html=True)
+        st.markdown('<div class="card-title text-blue-800">Key Innovations</div>', unsafe_allow_html=True)
+        st.markdown(
+            """
+            <ul class="card-list">
+            <li>Nonlinear coupling of environmental-economic factors</li>
+            <li>Regional sensitivity analysis framework</li>
+            <li>Critical threshold identification methods</li>
+            </ul>
+            """,
+            unsafe_allow_html=True
+        )
         st.markdown('</div>', unsafe_allow_html=True)
 
     with col2:
-        st.markdown('<div class="my-card bg-green-50">', unsafe_allow_html=True)
-        st.markdown('<div class="section-title text-green-800">Expected Impact</div>', unsafe_allow_html=True)
-        st.markdown('<ul class="custom-list"><li>Enhanced supply chain resilience strategies</li><li>Regional policy recommendations</li><li>Sustainability-oriented manufacturing practices</li></ul>', unsafe_allow_html=True)
+        st.markdown('<div class="card bg-green-50">', unsafe_allow_html=True)
+        st.markdown('<div class="card-title text-green-800">Expected Impact</div>', unsafe_allow_html=True)
+        st.markdown(
+            """
+            <ul class="card-list">
+            <li>Enhanced supply chain resilience strategies</li>
+            <li>Regional policy recommendations</li>
+            <li>Sustainability-oriented manufacturing practices</li>
+            </ul>
+            """,
+            unsafe_allow_html=True
+        )
+        st.markdown('</div>', unsafe_allow_html=True)
+
+def methodology_section():
+    st.markdown('<div class="section-title">Research Methodology</div>', unsafe_allow_html=True)
+
+    st.markdown(
+        """
+        <div class="card">
+            <p>We employ advanced system dynamics and nonlinear analysis techniques to model 
+            interdependencies among water availability, energy consumption, and production throughput 
+            in semiconductor manufacturing across multiple US regions.</p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # System Relationships + columns for Analysis Methods & Implementation Steps
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+    st.markdown('<div class="card-title">System Relationships</div>', unsafe_allow_html=True)
+    st.markdown("*(Placeholder for your diagram—replace with an actual image URL or remove.)*")
+    st.image("https://via.placeholder.com/600x300.png?text=System+Relationships", use_column_width=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown('<div class="card">', unsafe_allow_html=True)
+        st.markdown('<div class="card-title">Analysis Methods</div>', unsafe_allow_html=True)
+        st.markdown(
+            """
+            <ul class="card-list">
+            <li><strong>Lyapunov Stability Analysis</strong>: Examine system stability near equilibrium points</li>
+            <li><strong>Bifurcation Analysis</strong>: Identify critical parameter thresholds</li>
+            <li><strong>Sensitivity Analysis</strong>: Assess parameter impact</li>
+            </ul>
+            """,
+            unsafe_allow_html=True
+        )
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    with col2:
+        st.markdown('<div class="card">', unsafe_allow_html=True)
+        st.markdown('<div class="card-title">Implementation Steps</div>', unsafe_allow_html=True)
+        st.markdown(
+            """
+            <ul class="card-list">
+            <li><strong>Data Collection & Validation</strong>: Environmental & production data</li>
+            <li><strong>Model Calibration</strong>: Parameter estimation & validation</li>
+            <li><strong>Regional Analysis</strong>: Comparative regional studies</li>
+            </ul>
+            """,
+            unsafe_allow_html=True
+        )
         st.markdown('</div>', unsafe_allow_html=True)
 
 def regions_section():
     st.markdown('<div class="section-title">Regional Analysis</div>', unsafe_allow_html=True)
-    st.write("Key manufacturing regions and their critical environmental-economic characteristics:")
 
-    st.markdown('<div class="card-row">', unsafe_allow_html=True)
-
-    st.markdown('''
+    # Each region as a card
+    st.markdown(
+        """
         <div class="card">
             <h3 class="text-blue-800">Southwest Region (AZ, NM)</h3>
-            <ul>
+            <ul class="card-list">
                 <li>Water scarcity challenges</li>
                 <li>High solar energy potential</li>
                 <li>Major players: Intel, TSMC</li>
             </ul>
         </div>
-    ''', unsafe_allow_html=True)
 
-    st.markdown('''
         <div class="card">
             <h3 class="text-blue-800">Pacific Northwest (OR, WA)</h3>
-            <ul>
+            <ul class="card-list">
                 <li>Hydroelectric power availability</li>
                 <li>Stable water supply</li>
                 <li>Major player: Intel</li>
             </ul>
         </div>
-    ''', unsafe_allow_html=True)
 
-    st.markdown('''
         <div class="card">
             <h3 class="text-blue-800">Texas Region</h3>
-            <ul>
+            <ul class="card-list">
                 <li>Independent power grid (ERCOT)</li>
                 <li>Mixed energy sources</li>
                 <li>Major players: Samsung, TI</li>
             </ul>
         </div>
-    ''', unsafe_allow_html=True)
 
-    st.markdown('''
         <div class="card">
             <h3 class="text-blue-800">Northeast Corridor (NY)</h3>
-            <ul>
+            <ul class="card-list">
                 <li>Stable water resources</li>
                 <li>Strict environmental regulations</li>
                 <li>Major player: GlobalFoundries</li>
             </ul>
         </div>
-    ''', unsafe_allow_html=True)
-
-    st.markdown('</div>', unsafe_allow_html=True)
+        """,
+        unsafe_allow_html=True
+    )
 
 def data_section():
     st.markdown('<div class="section-title">Data Requirements & Accessibility</div>', unsafe_allow_html=True)
-    st.write("Below is an overview of easily accessible, moderately difficult, and challenging data sources.")
 
-    # 3 column layout for data categories
-    col1, col2, col3 = st.columns(3)
+    # Three data categories as separate cards
+    st.markdown('<div class="card bg-green-50">', unsafe_allow_html=True)
+    st.markdown('<div class="card-title text-green-800">Easily Accessible Data</div>', unsafe_allow_html=True)
+    st.markdown(
+        """
+        <ul class="card-list">
+            <li><strong>Regional Energy Consumption</strong><br/><em>Source: Department of Energy (DOE)</em></li>
+            <li><strong>Water Usage Permits</strong><br/><em>Source: State Environmental Agencies</em></li>
+            <li><strong>Environmental Compliance Records</strong><br/><em>Source: EPA Database</em></li>
+        </ul>
+        """,
+        unsafe_allow_html=True
+    )
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    with col1:
-        st.markdown('<div class="my-card bg-green-50">', unsafe_allow_html=True)
-        st.markdown('<div class="section-title text-green-800" style="font-size:1.2rem;">Easily Accessible Data</div>', unsafe_allow_html=True)
-        st.markdown('<ul class="custom-list"><li>Regional Energy Consumption (DOE)</li><li>Water Usage Permits (State Environmental Agencies)</li><li>Environmental Compliance Records (EPA Database)</li></ul>', unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown('<div class="card bg-yellow-50">', unsafe_allow_html=True)
+    st.markdown('<div class="card-title text-yellow-800">Moderately Difficult Data</div>', unsafe_allow_html=True)
+    st.markdown(
+        """
+        <ul class="card-list">
+            <li><strong>Facility Energy Usage</strong><br/><em>Source: Company Reports</em></li>
+            <li><strong>Water Recycling Rates</strong><br/><em>Source: Industry Surveys</em></li>
+            <li><strong>Production Capacity</strong><br/><em>Source: Industry Reports</em></li>
+        </ul>
+        """,
+        unsafe_allow_html=True
+    )
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    with col2:
-        st.markdown('<div class="my-card" style="background-color: #FEFCE8;">', unsafe_allow_html=True)  # Approx. yellow-50
-        st.markdown('<div class="section-title" style="color: #854D0E; font-size:1.2rem;">Moderately Difficult Data</div>', unsafe_allow_html=True)
-        st.markdown('<ul class="custom-list"><li>Facility Energy Usage (Company Reports)</li><li>Water Recycling Rates (Industry Surveys)</li><li>Production Capacity (Industry Reports)</li></ul>', unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
-
-    with col3:
-        st.markdown('<div class="my-card" style="background-color: #FEE2E2;">', unsafe_allow_html=True)  # Approx. red-100
-        st.markdown('<div class="section-title" style="color: #7F1D1D; font-size:1.2rem;">Challenging Data</div>', unsafe_allow_html=True)
-        st.markdown('<ul class="custom-list"><li>Efficiency Metrics (Proprietary Data)</li><li>Production Costs (Internal Records)</li><li>Environmental Targets (Corporate Plans)</li></ul>', unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
-
-def methodology_section():
-    st.markdown('<div class="section-title">Research Methodology</div>', unsafe_allow_html=True)
-    st.write("""
-    We employ advanced system dynamics and nonlinear analysis techniques to model interdependencies 
-    among water availability, energy consumption, and production throughput in semiconductor 
-    manufacturing across multiple US regions.
-    """)
-
-    # System Relationships
-    st.markdown("#### System Relationships")
-    st.markdown("*(Using a placeholder diagram URL. Replace with your own.)*")
-    st.image("https://via.placeholder.com/600x300.png?text=System+Relationships", use_column_width=True)
-
-    # Analysis Methods & Implementation Steps
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.markdown('<div class="my-card">', unsafe_allow_html=True)
-        st.markdown('<div class="section-title">Analysis Methods</div>', unsafe_allow_html=True)
-        st.markdown(
-            """
-            - **Lyapunov Stability Analysis**: Examining system stability near equilibrium points  
-            - **Bifurcation Analysis**: Identifying critical parameter thresholds  
-            - **Sensitivity Analysis**: Parameter impact assessment  
-            """)
-        st.markdown('</div>', unsafe_allow_html=True)
-
-    with col2:
-        st.markdown('<div class="my-card">', unsafe_allow_html=True)
-        st.markdown('<div class="section-title">Implementation Steps</div>', unsafe_allow_html=True)
-        st.markdown(
-            """
-            - **Data Collection & Validation**: Regional environmental and production data  
-            - **Model Calibration**: Parameter estimation and validation  
-            - **Regional Analysis**: Comparative regional studies  
-            """)
-        st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown('<div class="card bg-red-50">', unsafe_allow_html=True)
+    st.markdown('<div class="card-title text-red-800">Challenging Data</div>', unsafe_allow_html=True)
+    st.markdown(
+        """
+        <ul class="card-list">
+            <li><strong>Efficiency Metrics</strong><br/><em>Source: Proprietary Data</em></li>
+            <li><strong>Production Costs</strong><br/><em>Source: Internal Records</em></li>
+            <li><strong>Environmental Targets</strong><br/><em>Source: Corporate Plans</em></li>
+        </ul>
+        """,
+        unsafe_allow_html=True
+    )
+    st.markdown('</div>', unsafe_allow_html=True)
 
 def equations_section():
     st.markdown('<div class="section-title">System Equations</div>', unsafe_allow_html=True)
+
+    st.markdown('<div class="card">', unsafe_allow_html=True)
     st.markdown(
         """
-        Below is a conceptual overview of a nonlinear dynamical system describing production (P), 
-        water (W), energy (E), etc. We'll use ASCII-friendly variables to avoid syntax issues:
-        """
+        <p>Below is a conceptual overview of a nonlinear dynamical system describing production (P),
+        water (W), energy (E), etc. in ASCII-friendly notation:</p>
+        """,
+        unsafe_allow_html=True
     )
-
     st.code(
         """
-# Example (ASCII-friendly):
-# dP/dt = mu1 * M(t)*E(t)*W(t)*(1 - P/K) - delta1 * D(t)*P^2
-# dW/dt = alpha2 * P(t)*(1 - W/Wmax) - beta2 * R(t)*W^2 - delta2 * T(t)
-# dE/dt = [alpha1 * P(t) + beta1 * M(t)](1 - E/Emax) - gamma1 * R(t)*E^2
-# ...
+dP/dt = mu1 * M(t)*E(t)*W(t)*(1 - P/K) - delta1 * D(t)*P^2
+dW/dt = alpha2 * P(t)*(1 - W/Wmax) - beta2 * R(t)*W^2 - delta2 * T(t)
+dE/dt = [alpha1*P(t) + beta1*M(t)](1 - E/Emax) - gamma1*R(t)*E^2
+...
         """,
         language="python"
     )
+    st.markdown('</div>', unsafe_allow_html=True)
 
     col1, col2 = st.columns(2)
-
     with col1:
-        st.markdown('<div class="my-card">', unsafe_allow_html=True)
-        st.markdown('<div class="section-title">Stability Analysis</div>', unsafe_allow_html=True)
-        st.markdown("- Lyapunov stability analysis\n- Bifurcation analysis\n- Phase space analysis")
+        st.markdown('<div class="card">', unsafe_allow_html=True)
+        st.markdown('<div class="card-title">Stability Analysis</div>', unsafe_allow_html=True)
+        st.markdown(
+            """
+            <ul class="card-list">
+                <li>Lyapunov stability analysis</li>
+                <li>Bifurcation analysis</li>
+                <li>Phase space analysis</li>
+            </ul>
+            """,
+            unsafe_allow_html=True
+        )
         st.markdown('</div>', unsafe_allow_html=True)
 
     with col2:
-        st.markdown('<div class="my-card">', unsafe_allow_html=True)
-        st.markdown('<div class="section-title">Parameters</div>', unsafe_allow_html=True)
-        st.markdown("- Environmental coupling coefficients\n- Production efficiency factors\n- Resource utilization rates")
+        st.markdown('<div class="card">', unsafe_allow_html=True)
+        st.markdown('<div class="card-title">Parameters</div>', unsafe_allow_html=True)
+        st.markdown(
+            """
+            <ul class="card-list">
+                <li>Environmental coupling coefficients</li>
+                <li>Production efficiency factors</li>
+                <li>Resource utilization rates</li>
+            </ul>
+            """,
+            unsafe_allow_html=True
+        )
         st.markdown('</div>', unsafe_allow_html=True)
 
 def results_section():
     st.markdown('<div class="section-title">Expected Results & Impact</div>', unsafe_allow_html=True)
 
     col1, col2 = st.columns(2)
-
     with col1:
-        st.markdown('<div class="my-card bg-blue-50">', unsafe_allow_html=True)
-        st.markdown('<div class="section-title text-blue-800">Research Outcomes</div>', unsafe_allow_html=True)
+        st.markdown('<div class="card bg-blue-50">', unsafe_allow_html=True)
+        st.markdown('<div class="card-title text-blue-800">Research Outcomes</div>', unsafe_allow_html=True)
         st.markdown(
             """
-            - **Regional Stability Maps**: Identify critical thresholds for each region  
-            - **Sensitivity Metrics**: Measure system response to parameter variations  
-            - **Risk Assessment Framework**: Evaluate environmental risks to supply chain stability  
-            """)
+            <ul class="card-list">
+                <li><strong>Regional Stability Maps</strong><br/>Identification of stability boundaries and critical thresholds</li>
+                <li><strong>Sensitivity Metrics</strong><br/>System response to parameter variations</li>
+                <li><strong>Risk Assessment Framework</strong><br/>Evaluation of environmental risks to supply chain stability</li>
+            </ul>
+            """,
+            unsafe_allow_html=True
+        )
         st.markdown('</div>', unsafe_allow_html=True)
 
     with col2:
-        st.markdown('<div class="my-card bg-green-50">', unsafe_allow_html=True)
-        st.markdown('<div class="section-title text-green-800">Expected Impact</div>', unsafe_allow_html=True)
+        st.markdown('<div class="card bg-green-50">', unsafe_allow_html=True)
+        st.markdown('<div class="card-title text-green-800">Expected Impact</div>', unsafe_allow_html=True)
         st.markdown(
             """
-            - **Policy Recommendations**: Guidance for regional policymakers  
-            - **Industry Guidelines**: Best practices for environmental sustainability  
-            - **Resilience Strategies**: Actionable plans for supply chain strengthening  
-            """)
+            <ul class="card-list">
+                <li><strong>Policy Recommendations</strong><br/>Evidence-based guidance for regional policymakers</li>
+                <li><strong>Industry Guidelines</strong><br/>Best practices for environmental sustainability</li>
+                <li><strong>Resilience Strategies</strong><br/>Actionable plans for supply chain strengthening</li>
+            </ul>
+            """,
+            unsafe_allow_html=True
+        )
         st.markdown('</div>', unsafe_allow_html=True)
 
-# Run the app
+# 5) Run the app
 if __name__ == "__main__":
     main()
