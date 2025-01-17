@@ -1,464 +1,194 @@
-import React, { useState } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { ChevronRight, Database, Target, Beaker, LineChart, ArrowRightCircle } from 'lucide-react';
+import streamlit as st
+import pandas as pd
+import plotly.graph_objects as go
+import networkx as nx
 
-const ResearchProposal = () => {
-  const [selectedSection, setSelectedSection] = useState('overview');
+# Page Configuration
+st.set_page_config(layout="wide", page_title="Semiconductor Supply Chain Analysis")
 
-  const TopBar = () => (
-    <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 rounded-t-lg">
-      <h1 className="text-3xl font-bold mb-2">Environmental-Economic Sensitivity Analysis</h1>
-      <p className="text-blue-100">US Regional Semiconductor Supply Chain Dynamics</p>
-    </div>
-  );
+# Title and Introduction
+st.title("Environmental-Economic Sensitivity Analysis of US Regional Semiconductor Supply Chains")
 
-  const SideNav = () => (
-    <div className="flex flex-col gap-2 w-64 p-4 bg-gray-50 rounded-lg">
-      {['overview', 'methodology', 'regions', 'data', 'equations', 'results'].map((section) => (
-        <button
-          key={section}
-          className={`flex items-center gap-2 p-3 rounded-lg text-left transition-all ${
-            selectedSection === section 
-              ? 'bg-blue-600 text-white shadow-lg transform scale-105' 
-              : 'bg-white hover:bg-gray-100'
-          }`}
-          onClick={() => setSelectedSection(section)}
-        >
-          <ChevronRight className={`w-4 h-4 ${selectedSection === section ? 'text-white' : 'text-blue-600'}`} />
-          {section.charAt(0).toUpperCase() + section.slice(1)}
-        </button>
-      ))}
-    </div>
-  );
+# Sidebar for Navigation
+page = st.sidebar.selectbox(
+    "Select Section",
+    ["Overview", "Objectives", "Methodology", "Data Requirements", "System Model", "Results"]
+)
 
-  const RegionCard = ({ name, characteristics }) => (
-    <div className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-      <h3 className="text-lg font-semibold text-blue-800 mb-2">{name}</h3>
-      <ul className="space-y-2">
-        {characteristics.map((char, idx) => (
-          <li key={idx} className="flex items-start gap-2">
-            <ArrowRightCircle className="w-4 h-4 mt-1 text-blue-500" />
-            {char}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-
-  const renderContent = () => {
-    switch(selectedSection) {
-      case 'overview':
-        return (
-          <div className="space-y-6">
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h2 className="text-2xl font-bold text-blue-800 mb-4">Research Overview</h2>
-              <p className="text-gray-700 leading-relaxed">
-                This cutting-edge research investigates the complex dynamics between environmental sustainability 
-                and semiconductor supply chain resilience across key US manufacturing regions. Using advanced 
-                nonlinear dynamical systems analysis, we model the intricate relationships between water 
-                availability, energy transitions, and environmental regulations.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-blue-50 p-6 rounded-lg">
-                <h3 className="text-xl font-semibold text-blue-800 mb-3">Key Innovations</h3>
-                <ul className="space-y-3">
-                  <li className="flex items-start gap-2">
-                    <Target className="w-5 h-5 mt-1 text-blue-600" />
-                    <span>Nonlinear coupling of environmental-economic factors</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Target className="w-5 h-5 mt-1 text-blue-600" />
-                    <span>Regional sensitivity analysis framework</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Target className="w-5 h-5 mt-1 text-blue-600" />
-                    <span>Critical threshold identification methods</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="bg-green-50 p-6 rounded-lg">
-                <h3 className="text-xl font-semibold text-green-800 mb-3">Expected Impact</h3>
-                <ul className="space-y-3">
-                  <li className="flex items-start gap-2">
-                    <LineChart className="w-5 h-5 mt-1 text-green-600" />
-                    <span>Enhanced supply chain resilience strategies</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <LineChart className="w-5 h-5 mt-1 text-green-600" />
-                    <span>Regional policy recommendations</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <LineChart className="w-5 h-5 mt-1 text-green-600" />
-                    <span>Sustainability-oriented manufacturing practices</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        );
-
-      case 'regions':
-        return (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-blue-800">Regional Analysis</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <RegionCard 
-                name="Southwest Region (AZ, NM)"
-                characteristics={[
-                  "Water scarcity challenges",
-                  "High solar energy potential",
-                  "Major players: Intel, TSMC"
-                ]}
-              />
-              <RegionCard 
-                name="Pacific Northwest (OR, WA)"
-                characteristics={[
-                  "Hydroelectric power availability",
-                  "Stable water supply",
-                  "Major player: Intel"
-                ]}
-              />
-              <RegionCard 
-                name="Texas Region"
-                characteristics={[
-                  "Independent power grid (ERCOT)",
-                  "Mixed energy sources",
-                  "Major players: Samsung, TI"
-                ]}
-              />
-              <RegionCard 
-                name="Northeast Corridor (NY)"
-                characteristics={[
-                  "Stable water resources",
-                  "Strict environmental regulations",
-                  "Major player: GlobalFoundries"
-                ]}
-              />
-            </div>
-          </div>
-        );
-
-      case 'data':
-        return (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-blue-800 mb-4">Data Requirements & Accessibility</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-gradient-to-b from-green-50 to-white p-6 rounded-lg shadow-md">
-                <h3 className="font-semibold flex items-center gap-2 text-green-800 mb-4">
-                  <Database className="w-5 h-5 text-green-600" />
-                  Easily Accessible Data
-                </h3>
-                <ul className="space-y-3">
-                  <li className="flex items-start gap-2">
-                    <ArrowRightCircle className="w-4 h-4 mt-1 text-green-600" />
-                    <div>
-                      <p className="font-semibold">Regional Energy Consumption</p>
-                      <p className="text-sm text-gray-600">Source: Department of Energy (DOE)</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <ArrowRightCircle className="w-4 h-4 mt-1 text-green-600" />
-                    <div>
-                      <p className="font-semibold">Water Usage Permits</p>
-                      <p className="text-sm text-gray-600">Source: State Environmental Agencies</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <ArrowRightCircle className="w-4 h-4 mt-1 text-green-600" />
-                    <div>
-                      <p className="font-semibold">Environmental Compliance Records</p>
-                      <p className="text-sm text-gray-600">Source: EPA Database</p>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="bg-gradient-to-b from-yellow-50 to-white p-6 rounded-lg shadow-md">
-                <h3 className="font-semibold flex items-center gap-2 text-yellow-800 mb-4">
-                  <Database className="w-5 h-5 text-yellow-600" />
-                  Moderately Difficult Data
-                </h3>
-                <ul className="space-y-3">
-                  <li className="flex items-start gap-2">
-                    <ArrowRightCircle className="w-4 h-4 mt-1 text-yellow-600" />
-                    <div>
-                      <p className="font-semibold">Facility Energy Usage</p>
-                      <p className="text-sm text-gray-600">Source: Company Reports</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <ArrowRightCircle className="w-4 h-4 mt-1 text-yellow-600" />
-                    <div>
-                      <p className="font-semibold">Water Recycling Rates</p>
-                      <p className="text-sm text-gray-600">Source: Industry Surveys</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <ArrowRightCircle className="w-4 h-4 mt-1 text-yellow-600" />
-                    <div>
-                      <p className="font-semibold">Production Capacity</p>
-                      <p className="text-sm text-gray-600">Source: Industry Reports</p>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="bg-gradient-to-b from-red-50 to-white p-6 rounded-lg shadow-md">
-                <h3 className="font-semibold flex items-center gap-2 text-red-800 mb-4">
-                  <Database className="w-5 h-5 text-red-600" />
-                  Challenging Data
-                </h3>
-                <ul className="space-y-3">
-                  <li className="flex items-start gap-2">
-                    <ArrowRightCircle className="w-4 h-4 mt-1 text-red-600" />
-                    <div>
-                      <p className="font-semibold">Efficiency Metrics</p>
-                      <p className="text-sm text-gray-600">Source: Proprietary Data</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <ArrowRightCircle className="w-4 h-4 mt-1 text-red-600" />
-                    <div>
-                      <p className="font-semibold">Production Costs</p>
-                      <p className="text-sm text-gray-600">Source: Internal Records</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <ArrowRightCircle className="w-4 h-4 mt-1 text-red-600" />
-                    <div>
-                      <p className="font-semibold">Environmental Targets</p>
-                      <p className="text-sm text-gray-600">Source: Corporate Plans</p>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        );
-
-      case 'methodology':
-        return (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-blue-800 mb-4">Research Methodology</h2>
-            
-            <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-              <h3 className="text-xl font-semibold text-blue-800 mb-4">System Relationships</h3>
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <img src="https://mermaid.ink/svg/pako:eNqNVE1v2zAM_SuETh2QFPDHbKd2l2LHYcBQoEOBXQxZYmyhsmRIcpag6H8fZcVJ3BbdepIoPpLvPVK6Q7UVHHmBV1t0pZYWDIOgNpK9K_LMtNELqX_W0lSw9F4YwZXWsNkHa1EAO31RjS4rqBsHX1SDHUTwR5XWQG2hAm05_oGNbjwE-vXBGOl2J8f-K_QJ0I_-A2c5CNYBNByVRFwVypTDI-6EQdPZllD8kDd4lT4YZb_Mj-Kre2mDVahzPu-YTmfHF47m0-hs8XEyn0Uw_YFdJa1x0FQ6d9jHfJwvZvPZdBGmoQeKBg6tM1ZXEVzyQpemdm2jvVPRzfnrUVfrJ8_J1awggl-gK24i-HRzG8Eq18aUaGBtZV0BVEDxr-1r9sC7DkIo-Uarpr94Zdy3PZEILv4tTQkl5xDkXTLgpxX4ZWfBmfB8NORQqXzL20qhLXkJtVWtm5QXDVaFthUHqKFlpTXgHQFxbfJDVqmMQ2d7qT1qbhVP_uDJaBSGvJvYJNrGUYRBSK9dZqWl1i-O4Dd4z_PK1C3lEXwbz-KPcXx3n97eX8fjuxh-Jq32pbRRPptKqxzCJvHBJ2sJfpO_IEQEDy9_5cBF8HkSD75GcJvQ5CabSS4F_OEm58nkNI1RaK3x0uCw2KrIQ-Yj9wB8RB5_0yZrW39JvWWlSGYp7K1eJ4s0S9MkWWVZnK6SNM2yLFuv4jSJ09U6WedxtobvKOy3LWdw2F1BzSQN1LVDAZ4oL0zRIFcFWvBN7sC6UqcLBfQ5ghq54AV4Jrw9BmLDSVzD0PAEDb1vRSE1r7j4L5t7sBiMRuvRaK_4zoGQ3WK5YH9pT3YmQ9tBKQv_8VDlJCYVS1GcXsqeCW91oet9oaU5kcm7bRoP3W_xHzBYREI" alt="System Relationships" className="w-full" />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-xl font-semibold text-blue-800 mb-3">Analysis Methods</h3>
-                <ul className="space-y-3">
-                  <li className="flex items-start gap-2">
-                    <Beaker className="w-5 h-5 mt-1 text-blue-600" />
-                    <div>
-                      <p className="font-semibold">Lyapunov Stability Analysis</p>
-                      <p className="text-sm text-gray-600">Examining system stability near equilibrium points</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Beaker className="w-5 h-5 mt-1 text-blue-600" />
-                    <div>
-                      <p className="font-semibold">Bifurcation Analysis</p>
-                      <p className="text-sm text-gray-600">Identifying critical parameter thresholds</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Beaker className="w-5 h-5 mt-1 text-blue-600" />
-                    <div>
-                      <p className="font-semibold">Sensitivity Analysis</p>
-                      <p className="text-sm text-gray-600">Parameter impact assessment</p>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-xl font-semibold text-blue-800 mb-3">Implementation Steps</h3>
-                <ul className="space-y-3">
-                  <li className="flex items-start gap-2">
-                    <ArrowRightCircle className="w-4 h-4 mt-1 text-blue-600" />
-                    <div>
-                      <p className="font-semibold">Data Collection & Validation</p>
-                      <p className="text-sm text-gray-600">Regional environmental and production data</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <ArrowRightCircle className="w-4 h-4 mt-1 text-blue-600" />
-                    <div>
-                      <p className="font-semibold">Model Calibration</p>
-                      <p className="text-sm text-gray-600">Parameter estimation and validation</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <ArrowRightCircle className="w-4 h-4 mt-1 text-blue-600" />
-                    <div>
-                      <p className="font-semibold">Regional Analysis</p>
-                      <p className="text-sm text-gray-600">Comparative regional studies</p>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        );
-
-      case 'equations':
-        return (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-blue-800">System Equations</h2>
-            <div className="bg-blue-50 p-6 rounded-lg shadow-md">
-              <h3 className="text-xl font-semibold text-blue-800 mb-4">Nonlinear Dynamical System</h3>
-              <div className="font-mono text-sm space-y-3 bg-white p-4 rounded-lg">
-                <p>dP/dt = μ₁M(t)E(t)W(t)(1 - P/K) - δ₁D(t)P²</p>
-                <p>dW/dt = α₂P(t)(1 - W/Wmax) - β₂R(t)W² - δ₂T(t)</p>
-                <p>dE/dt = [α₁P(t) + β₁M(t)](1 - E/Emax) - γ₁R(t)E²</p>
-                <p>dC/dt = λ₁(C*(t) - C(t))³ + λ₂E(t)W(t) - λ₄P(t)²</p>
-                <p>dR/dt = σ₁C(t)² + σ₂(E(t)/P(t))³ + σ₃(W(t)/P(t))³ - σ₄R(t)²</p>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-xl font-semibold text-blue-800 mb-3">Stability Analysis</h3>
-                <ul className="space-y-3">
-                  <li className="flex items-start gap-2">
-                    <Beaker className="w-5 h-5 mt-1 text-blue-600" />
-                    <span>Lyapunov stability analysis</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Beaker className="w-5 h-5 mt-1 text-blue-600" />
-                    <span>Bifurcation analysis</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Beaker className="w-5 h-5 mt-1 text-blue-600" />
-                    <span>Phase space analysis</span>
-                  </li>
-                </ul>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-xl font-semibold text-blue-800 mb-3">Parameters</h3>
-                <ul className="space-y-3">
-                  <li className="flex items-start gap-2">
-                    <Database className="w-5 h-5 mt-1 text-blue-600" />
-                    <span>Environmental coupling coefficients</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Database className="w-5 h-5 mt-1 text-blue-600" />
-                    <span>Production efficiency factors</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Database className="w-5 h-5 mt-1 text-blue-600" />
-                    <span>Resource utilization rates</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        );
-
-      case 'results':
-        return (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-blue-800 mb-4">Expected Results & Impact</h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-gradient-to-br from-blue-50 via-white to-blue-50 p-6 rounded-lg shadow-md">
-                <h3 className="text-xl font-semibold text-blue-800 mb-4">Research Outcomes</h3>
-                <ul className="space-y-4">
-                  <li className="flex items-start gap-3">
-                    <LineChart className="w-5 h-5 mt-1 text-blue-600" />
-                    <div>
-                      <p className="font-semibold">Regional Stability Maps</p>
-                      <p className="text-sm text-gray-600">Identification of stability boundaries and critical thresholds for each region</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <LineChart className="w-5 h-5 mt-1 text-blue-600" />
-                    <div>
-                      <p className="font-semibold">Sensitivity Metrics</p>
-                      <p className="text-sm text-gray-600">Quantitative measures of system response to parameter variations</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <LineChart className="w-5 h-5 mt-1 text-blue-600" />
-                    <div>
-                      <p className="font-semibold">Risk Assessment Framework</p>
-                      <p className="text-sm text-gray-600">Comprehensive evaluation of environmental risks to supply chain stability</p>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="bg-gradient-to-br from-green-50 via-white to-green-50 p-6 rounded-lg shadow-md">
-                <h3 className="text-xl font-semibold text-green-800 mb-4">Expected Impact</h3>
-                <ul className="space-y-4">
-                  <li className="flex items-start gap-3">
-                    <LineChart className="w-5 h-5 mt-1 text-green-600" />
-                    <div>
-                      <p className="font-semibold">Policy Recommendations</p>
-                      <p className="text-sm text-gray-600">Evidence-based guidance for regional policy makers</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <LineChart className="w-5 h-5 mt-1 text-green-600" />
-                    <div>
-                      <p className="font-semibold">Industry Guidelines</p>
-                      <p className="text-sm text-gray-600">Best practices for environmental sustainability</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <LineChart className="w-5 h-5 mt-1 text-green-600" />
-                    <div>
-                      <p className="font-semibold">Resilience Strategies</p>
-                      <p className="text-sm text-gray-600">Actionable plans for supply chain strengthening</p>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            <div className="bg-gradient-to-br from-purple-50 via-white to-purple-50 p-6 rounded-lg shadow-md mt-6">
-              <h3 className="text-xl font-semibold text-purple-800 mb-4">Future Applications</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-white p-4 rounded-lg">
-                  <p className="font-semibold text-purple-700">Model Extension</p>
-                  <p className="text-sm text-gray-600">Adaptable to other manufacturing sectors</p>
-                </div>
-                <div className="bg-white p-4 rounded-lg">
-                  <p className="font-semibold text-purple-700">Decision Support</p>
-                  <p className="text-sm text-gray-600">Interactive planning tools</p>
-                </div>
-                <div className="bg-white p-4 rounded-lg">
-                  <p className="font-semibold text-purple-700">Risk Management</p>
-                  <p className="text-sm text-gray-600">Early warning system development</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
+# Create system relationship diagram using NetworkX
+def create_system_diagram():
+    G = nx.DiGraph()
+    nodes = {
+        'W': 'Water\nAvailability',
+        'E': 'Energy\nAvailability',
+        'P': 'Production\nCapacity',
+        'C': 'Compliance\nLevel',
+        'R': 'Resource\nEfficiency'
     }
-  };
+    
+    # Add nodes
+    for key, label in nodes.items():
+        G.add_node(key, label=label)
+    
+    # Add edges with relationships
+    edges = [
+        ('W', 'P', 'Constrains'),
+        ('E', 'P', 'Powers'),
+        ('P', 'W', 'Consumes'),
+        ('P', 'E', 'Requires'),
+        ('R', 'W', 'Improves'),
+        ('R', 'E', 'Optimizes'),
+        ('C', 'R', 'Affects'),
+        ('P', 'C', 'Influences'),
+    ]
+    
+    for edge in edges:
+        G.add_edge(edge[0], edge[1], relationship=edge[2])
+    
+    return G
 
-  return (
-    <div className="min-h-screen bg-gray-100">
-      <TopBar />
-      <div className="max-w-7xl mx-auto p-6">
-        <div className="flex gap-6">
-          <SideNav />
-          <div className="flex-1 bg-white p-6 rounded-lg shadow-md">
-            {renderContent()}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+if page == "Overview":
+    st.header("Research Overview")
+    st.write("""
+    This research introduces a novel nonlinear dynamical systems framework for analyzing 
+    the complex interactions between environmental sustainability factors and semiconductor 
+    supply chain resilience across key US manufacturing regions.
+    """)
+    
+    # Key Features in columns
+    col1, col2 = st.columns(2)
+    with col1:
+        st.subheader("Key Innovations")
+        st.write("""
+        - Nonlinear coupling of environmental-economic factors
+        - Regional sensitivity analysis framework
+        - Critical threshold identification methods
+        - Advanced stability analysis techniques
+        """)
+    
+    with col2:
+        st.subheader("Expected Impact")
+        st.write("""
+        - Enhanced supply chain resilience strategies
+        - Regional policy recommendations
+        - Sustainability-oriented manufacturing practices
+        - Improved risk assessment frameworks
+        """)
 
-export default ResearchProposal;
+elif page == "Objectives":
+    st.header("Research Objectives")
+    
+    st.subheader("Primary Objectives")
+    objectives = {
+        "System Modeling": "Develop a nonlinear dynamical system incorporating environmental-economic coupling",
+        "Regional Analysis": "Analyze sensitivity across different US manufacturing regions",
+        "Stability Assessment": "Identify critical thresholds and stability boundaries",
+        "Policy Impact": "Develop strategic recommendations for regional resilience"
+    }
+    
+    for title, description in objectives.items():
+        with st.expander(title):
+            st.write(description)
+
+elif page == "Methodology":
+    st.header("Research Methodology")
+    
+    # System diagram
+    st.subheader("System Relationships")
+    G = create_system_diagram()
+    # Note: In actual implementation, you would need to use a plotting library
+    # compatible with Streamlit to visualize the network
+    
+    # Equations
+    st.subheader("System Equations")
+    st.latex(r'''
+    \begin{align*}
+    \frac{dP}{dt} &= \mu_1 M(t)E(t)W(t)(1 - \frac{P}{K}) - \delta_1 D(t)P^2 \\
+    \frac{dW}{dt} &= \alpha_2 P(t)(1 - \frac{W}{W_{max}}) - \beta_2 R(t)W^2 - \delta_2 T(t) \\
+    \frac{dE}{dt} &= [\alpha_1 P(t) + \beta_1 M(t)](1 - \frac{E}{E_{max}}) - \gamma_1 R(t)E^2 \\
+    \frac{dC}{dt} &= \lambda_1(C^*(t) - C(t))^3 + \lambda_2 E(t)W(t) - \lambda_4 P(t)^2 \\
+    \frac{dR}{dt} &= \sigma_1 C(t)^2 + \sigma_2(\frac{E(t)}{P(t)})^3 + \sigma_3(\frac{W(t)}{P(t)})^3 - \sigma_4 R(t)^2
+    \end{align*}
+    ''')
+
+elif page == "Data Requirements":
+    st.header("Data Requirements")
+    
+    # Create tabs for different data categories
+    tab1, tab2, tab3 = st.tabs(["Easily Accessible", "Moderately Difficult", "Challenging"])
+    
+    with tab1:
+        st.subheader("Easily Accessible Data")
+        easy_data = {
+            "Source": ["DOE", "State Agencies", "EPA"],
+            "Data Type": ["Regional Energy Consumption", "Water Usage Permits", "Environmental Compliance"],
+            "Update Frequency": ["Monthly", "Quarterly", "Annual"]
+        }
+        st.table(pd.DataFrame(easy_data))
+    
+    with tab2:
+        st.subheader("Moderately Difficult Data")
+        mod_data = {
+            "Source": ["Company Reports", "Industry Surveys", "Trade Associations"],
+            "Data Type": ["Facility Energy Usage", "Water Recycling Rates", "Production Capacity"],
+            "Access Method": ["Public Reports", "Paid Subscriptions", "Membership"]
+        }
+        st.table(pd.DataFrame(mod_data))
+    
+    with tab3:
+        st.subheader("Challenging Data")
+        challenging_data = {
+            "Source": ["Internal Records", "Proprietary Data", "Corporate Plans"],
+            "Data Type": ["Efficiency Metrics", "Production Costs", "Environmental Targets"],
+            "Challenges": ["Confidential", "Limited Access", "Non-standardized"]
+        }
+        st.table(pd.DataFrame(challenging_data))
+
+elif page == "System Model":
+    st.header("System Model")
+    
+    # Regional Analysis
+    st.subheader("Regional Analysis")
+    regions = {
+        "Southwest (AZ, NM)": ["Water scarcity challenges", "High solar potential", "Major players: Intel, TSMC"],
+        "Pacific Northwest (OR, WA)": ["Hydroelectric power", "Stable water supply", "Major player: Intel"],
+        "Texas": ["Independent power grid", "Mixed energy sources", "Major players: Samsung, TI"],
+        "Northeast (NY)": ["Stable resources", "Strict regulations", "Major player: GlobalFoundries"]
+    }
+    
+    cols = st.columns(2)
+    for idx, (region, details) in enumerate(regions.items()):
+        with cols[idx % 2]:
+            with st.expander(region):
+                for detail in details:
+                    st.write(f"• {detail}")
+
+elif page == "Results":
+    st.header("Expected Results")
+    
+    # Create three columns for different result categories
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.subheader("Research Outcomes")
+        st.write("""
+        - Regional Stability Maps
+        - Sensitivity Metrics
+        - Risk Assessment Framework
+        """)
+    
+    with col2:
+        st.subheader("Expected Impact")
+        st.write("""
+        - Policy Recommendations
+        - Industry Guidelines
+        - Resilience Strategies
+        """)
+    
+    with col3:
+        st.subheader("Future Applications")
+        st.write("""
+        - Model Extension
+        - Decision Support
+        - Risk Management
+        """)
