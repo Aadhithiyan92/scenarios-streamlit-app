@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
-import networkx as nx
 
 # Page Configuration
 st.set_page_config(layout="wide", page_title="Semiconductor Supply Chain Analysis")
@@ -12,40 +11,8 @@ st.title("Environmental-Economic Sensitivity Analysis of US Regional Semiconduct
 # Sidebar for Navigation
 page = st.sidebar.selectbox(
     "Select Section",
-    ["Overview", "Objectives", "Methodology", "Data Requirements", "System Model", "Results"]
+    ["Overview", "Objectives", "Methodology", "Data Requirements", "Regional Analysis", "Results"]
 )
-
-# Create system relationship diagram using NetworkX
-def create_system_diagram():
-    G = nx.DiGraph()
-    nodes = {
-        'W': 'Water\nAvailability',
-        'E': 'Energy\nAvailability',
-        'P': 'Production\nCapacity',
-        'C': 'Compliance\nLevel',
-        'R': 'Resource\nEfficiency'
-    }
-    
-    # Add nodes
-    for key, label in nodes.items():
-        G.add_node(key, label=label)
-    
-    # Add edges with relationships
-    edges = [
-        ('W', 'P', 'Constrains'),
-        ('E', 'P', 'Powers'),
-        ('P', 'W', 'Consumes'),
-        ('P', 'E', 'Requires'),
-        ('R', 'W', 'Improves'),
-        ('R', 'E', 'Optimizes'),
-        ('C', 'R', 'Affects'),
-        ('P', 'C', 'Influences'),
-    ]
-    
-    for edge in edges:
-        G.add_edge(edge[0], edge[1], relationship=edge[2])
-    
-    return G
 
 if page == "Overview":
     st.header("Research Overview")
@@ -93,13 +60,7 @@ elif page == "Objectives":
 elif page == "Methodology":
     st.header("Research Methodology")
     
-    # System diagram
-    st.subheader("System Relationships")
-    G = create_system_diagram()
-    # Note: In actual implementation, you would need to use a plotting library
-    # compatible with Streamlit to visualize the network
-    
-    # Equations
+    # Display system equations
     st.subheader("System Equations")
     st.latex(r'''
     \begin{align*}
@@ -110,6 +71,17 @@ elif page == "Methodology":
     \frac{dR}{dt} &= \sigma_1 C(t)^2 + \sigma_2(\frac{E(t)}{P(t)})^3 + \sigma_3(\frac{W(t)}{P(t)})^3 - \sigma_4 R(t)^2
     \end{align*}
     ''')
+    
+    st.subheader("Analysis Methods")
+    methods = {
+        "Stability Analysis": "Lyapunov stability analysis near equilibrium points",
+        "Bifurcation Analysis": "Identification of critical parameter thresholds",
+        "Sensitivity Analysis": "Parameter impact assessment",
+        "Regional Comparison": "Comparative analysis across different US regions"
+    }
+    
+    for method, description in methods.items():
+        st.markdown(f"**{method}:** {description}")
 
 elif page == "Data Requirements":
     st.header("Data Requirements")
@@ -144,24 +116,48 @@ elif page == "Data Requirements":
         }
         st.table(pd.DataFrame(challenging_data))
 
-elif page == "System Model":
-    st.header("System Model")
+elif page == "Regional Analysis":
+    st.header("Regional Analysis")
     
-    # Regional Analysis
-    st.subheader("Regional Analysis")
+    # Regional comparison using columns
     regions = {
-        "Southwest (AZ, NM)": ["Water scarcity challenges", "High solar potential", "Major players: Intel, TSMC"],
-        "Pacific Northwest (OR, WA)": ["Hydroelectric power", "Stable water supply", "Major player: Intel"],
-        "Texas": ["Independent power grid", "Mixed energy sources", "Major players: Samsung, TI"],
-        "Northeast (NY)": ["Stable resources", "Strict regulations", "Major player: GlobalFoundries"]
+        "Southwest (AZ, NM)": {
+            "Characteristics": ["Water scarcity challenges", "High solar potential", "Major players: Intel, TSMC"],
+            "Key Concerns": ["Water availability", "Cooling efficiency", "Energy costs"],
+            "Opportunities": ["Solar power integration", "Advanced recycling", "New fab developments"]
+        },
+        "Pacific Northwest (OR, WA)": {
+            "Characteristics": ["Hydroelectric power", "Stable water supply", "Major player: Intel"],
+            "Key Concerns": ["Environmental regulations", "Natural disasters", "Grid reliability"],
+            "Opportunities": ["Green energy expansion", "Water conservation", "Sustainable practices"]
+        },
+        "Texas": {
+            "Characteristics": ["Independent power grid", "Mixed energy sources", "Major players: Samsung, TI"],
+            "Key Concerns": ["Grid stability", "Water rights", "Climate impacts"],
+            "Opportunities": ["Energy diversity", "Manufacturing expansion", "Technology innovation"]
+        },
+        "Northeast (NY)": {
+            "Characteristics": ["Stable resources", "Strict regulations", "Major player: GlobalFoundries"],
+            "Key Concerns": ["Regulatory compliance", "Operating costs", "Winter impacts"],
+            "Opportunities": ["Research collaboration", "Policy leadership", "Workforce development"]
+        }
     }
     
-    cols = st.columns(2)
-    for idx, (region, details) in enumerate(regions.items()):
-        with cols[idx % 2]:
-            with st.expander(region):
-                for detail in details:
-                    st.write(f"• {detail}")
+    for region, details in regions.items():
+        with st.expander(region):
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.markdown("**Characteristics**")
+                for item in details["Characteristics"]:
+                    st.write(f"• {item}")
+            with col2:
+                st.markdown("**Key Concerns**")
+                for item in details["Key Concerns"]:
+                    st.write(f"• {item}")
+            with col3:
+                st.markdown("**Opportunities**")
+                for item in details["Opportunities"]:
+                    st.write(f"• {item}")
 
 elif page == "Results":
     st.header("Expected Results")
@@ -171,24 +167,33 @@ elif page == "Results":
     
     with col1:
         st.subheader("Research Outcomes")
-        st.write("""
-        - Regional Stability Maps
-        - Sensitivity Metrics
-        - Risk Assessment Framework
-        """)
+        outcomes = [
+            "Regional Stability Maps",
+            "Sensitivity Metrics",
+            "Risk Assessment Framework",
+            "Parameter Thresholds"
+        ]
+        for outcome in outcomes:
+            st.write(f"• {outcome}")
     
     with col2:
         st.subheader("Expected Impact")
-        st.write("""
-        - Policy Recommendations
-        - Industry Guidelines
-        - Resilience Strategies
-        """)
+        impacts = [
+            "Policy Recommendations",
+            "Industry Guidelines",
+            "Resilience Strategies",
+            "Best Practices"
+        ]
+        for impact in impacts:
+            st.write(f"• {impact}")
     
     with col3:
         st.subheader("Future Applications")
-        st.write("""
-        - Model Extension
-        - Decision Support
-        - Risk Management
-        """)
+        applications = [
+            "Model Extension",
+            "Decision Support",
+            "Risk Management",
+            "Strategic Planning"
+        ]
+        for application in applications:
+            st.write(f"• {application}")
