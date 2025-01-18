@@ -1,7 +1,10 @@
 import streamlit as st
 
-# 1) Inject custom CSS to style the page.
 def inject_custom_css():
+    """
+    Inject custom CSS to style the page, including
+    new classes for system formation cards.
+    """
     st.markdown(
         """
         <style>
@@ -48,7 +51,7 @@ def inject_custom_css():
             padding-top: 1rem;
         }
 
-        /* Remove default Streamlit sidebar */
+        /* Hide default Streamlit sidebar */
         section[data-testid="stSidebar"] {
             display: none;
         }
@@ -120,27 +123,51 @@ def inject_custom_css():
         .text-yellow-800 { color: #854D0E; }
         .text-red-800 { color: #7F1D1D; }
 
-        /* Headings inside cards */
         .card-title {
             font-size: 1.2rem;
             font-weight: 600;
             margin-bottom: 0.5rem;
+        }
+
+        /* New system-formation classes */
+        .system-card {
+            background-color: #FFFFFF;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .system-card-title {
+            color: #1E3A8A;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .system-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .system-list li {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            position: relative;
         }
         </style>
         """,
         unsafe_allow_html=True
     )
 
-# 2) Our main app function
 def main():
     st.set_page_config(page_title="Environmental-Economic Sensitivity Analysis", layout="wide")
+
+    # Inject our custom CSS
     inject_custom_css()
 
-    # We'll track the selected page in st.session_state
+    # We track selected page in session_state
     if "selected_page" not in st.session_state:
         st.session_state.selected_page = "Overview"
 
-    # 2A) Top bar
+    # Top Bar
     st.markdown(
         """
         <div class="top-bar">
@@ -151,29 +178,23 @@ def main():
         unsafe_allow_html=True
     )
 
-    # 2B) Body layout: custom 'layout-container' with a custom "sidebar" div plus main content
+    # Body layout: custom "layout-container" with a custom sidebar plus main content
     st.markdown('<div class="layout-container">', unsafe_allow_html=True)
-
-    # Sidebar
     st.markdown('<div class="sidebar-container">', unsafe_allow_html=True)
     render_sidebar()
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # Main Content
     st.markdown('<div class="main-content">', unsafe_allow_html=True)
     render_page(st.session_state.selected_page)
     st.markdown('</div>', unsafe_allow_html=True)
-
     st.markdown('</div>', unsafe_allow_html=True)
 
-
-# 3) Render the custom sidebar
 def render_sidebar():
-    pages = ["Overview", "Methodology", "Regions", "Data", "Equations", "Results"]
+    # Updated pages list to include "System Formation"
+    pages = ["Overview", "Methodology", "System Formation", "Regions", "Data", "Equations", "Results"]
 
     st.markdown('<ul class="nav-list">', unsafe_allow_html=True)
     for page in pages:
-        # Check if this page is currently active
         active_class = "active" if page == st.session_state.selected_page else ""
         sidebar_item = f"""
         <li class="nav-item {active_class}" onClick="window.location.href='?selected_page={page}'">
@@ -183,10 +204,7 @@ def render_sidebar():
         st.markdown(sidebar_item, unsafe_allow_html=True)
     st.markdown('</ul>', unsafe_allow_html=True)
 
-# 4) Based on selected_page, display the appropriate section
 def render_page(page):
-    # When a nav item is clicked, we get a query param '?selected_page=PageName'
-    # Let's read that param to update session_state
     query_params = st.experimental_get_query_params()
     if "selected_page" in query_params:
         st.session_state.selected_page = query_params["selected_page"][0]
@@ -195,6 +213,8 @@ def render_page(page):
         overview_section()
     elif page == "Methodology":
         methodology_section()
+    elif page == "System Formation":
+        system_formation()
     elif page == "Regions":
         regions_section()
     elif page == "Data":
@@ -203,6 +223,10 @@ def render_page(page):
         equations_section()
     elif page == "Results":
         results_section()
+
+# ---------------------------------------------------------------------
+# Existing sections (Overview, Methodology, Regions, Data, Equations, Results)
+# ---------------------------------------------------------------------
 
 def overview_section():
     st.markdown('<div class="card">', unsafe_allow_html=True)
@@ -217,9 +241,7 @@ def overview_section():
     )
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # "Key Innovations" (blue) and "Expected Impact" (green) side by side using st.columns
     col1, col2 = st.columns(2)
-
     with col1:
         st.markdown('<div class="card bg-blue-50">', unsafe_allow_html=True)
         st.markdown('<div class="card-title text-blue-800">Key Innovations</div>', unsafe_allow_html=True)
@@ -264,10 +286,9 @@ def methodology_section():
         unsafe_allow_html=True
     )
 
-    # System Relationships + columns for Analysis Methods & Implementation Steps
     st.markdown('<div class="card">', unsafe_allow_html=True)
     st.markdown('<div class="card-title">System Relationships</div>', unsafe_allow_html=True)
-    st.markdown("*(Placeholder for your diagram—replace with an actual image URL or remove.)*")
+    st.markdown("*(Placeholder for your diagram—replace with an actual image URL if desired.)*")
     st.image("https://via.placeholder.com/600x300.png?text=System+Relationships", use_column_width=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
@@ -302,10 +323,141 @@ def methodology_section():
         )
         st.markdown('</div>', unsafe_allow_html=True)
 
+# ---------------------------------------------------------------------
+# NEW SECTION: System Formation
+# ---------------------------------------------------------------------
+def system_formation():
+    st.markdown('<div class="section-title">System Formation</div>', unsafe_allow_html=True)
+
+    # Overview Card
+    st.markdown(
+        """
+        <div class="card">
+            <div class="card-title">System Development Process</div>
+            <p>Our nonlinear dynamical system was developed through a systematic approach 
+            considering the key interactions between environmental, economic, and operational factors 
+            in semiconductor manufacturing.</p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # State Variables Card
+    st.markdown(
+        """
+        <div class="card bg-blue-50">
+            <div class="card-title text-blue-800">State Variables</div>
+            <ul class="card-list">
+                <li><strong>P(t): Production Capacity</strong><br/>
+                    • Represents manufacturing output capability<br/>
+                    • Influenced by resource availability and demand</li>
+                <li><strong>W(t): Water Availability</strong><br/>
+                    • Measures water resources accessible for production<br/>
+                    • Affected by regional conditions and recycling</li>
+                <li><strong>E(t): Energy Availability</strong><br/>
+                    • Represents power supply stability<br/>
+                    • Includes renewable and traditional sources</li>
+                <li><strong>C(t): Compliance Level</strong><br/>
+                    • Environmental regulation adherence<br/>
+                    • Affects operational constraints</li>
+                <li><strong>R(t): Resource Efficiency</strong><br/>
+                    • Measures resource utilization effectiveness<br/>
+                    • Influences sustainability metrics</li>
+            </ul>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # System Interactions Card
+    st.markdown(
+        """
+        <div class="card bg-green-50">
+            <div class="card-title text-green-800">Key System Interactions</div>
+            <ul class="card-list">
+                <li><strong>Production-Resource Coupling</strong><br/>
+                    • Nonlinear relationship between production and resource consumption<br/>
+                    • Capacity constraints and efficiency factors</li>
+                <li><strong>Environmental Feedback</strong><br/>
+                    • Resource availability affects production capabilities<br/>
+                    • Environmental conditions influence efficiency</li>
+                <li><strong>Regulatory Impact</strong><br/>
+                    • Compliance requirements affect operational parameters<br/>
+                    • Policy changes create system perturbations</li>
+            </ul>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # Equation Formation Card
+    st.markdown(
+        """
+        <div class="card">
+            <div class="card-title">Equation Development</div>
+            <p>Our system equations incorporate:</p>
+            <ul class="card-list">
+                <li><strong>Logistic Growth Terms:</strong> (1 - P/K) for capacity constraints</li>
+                <li><strong>Quadratic Damping:</strong> -δ₁D(t)P² for resource limitations</li>
+                <li><strong>Cubic Interactions:</strong> λ₁(C*(t) - C(t))³ for compliance effects</li>
+                <li><strong>Resource Coupling:</strong> E(t)W(t) for environmental interactions</li>
+            </ul>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # Mermaid Diagram (as a code block). 
+    # NOTE: By default, Streamlit won't "render" Mermaid syntax. 
+    # This will just show as text unless you use a custom component or extension. 
+    # Alternatively, embed an SVG from mermaid.ink. For demonstration, we show the code:
+    st.markdown("**System Interaction Diagram (Mermaid)**")
+    st.markdown(
+        """
+        ```mermaid
+        graph TD
+            subgraph Production System
+                P[Production Capacity]
+                M[Manufacturing Rate]
+                D[Demand]
+            end
+
+            subgraph Environmental Resources
+                W[Water Availability]
+                E[Energy Supply]
+                R[Resource Efficiency]
+            end
+
+            subgraph Regulatory Framework
+                C[Compliance Level]
+                REG[Environmental Regulations]
+            end
+
+            P -- Consumes --> W
+            P -- Requires --> E
+            W -- Constrains --> P
+            E -- Powers --> P
+            R -- Improves --> W
+            R -- Optimizes --> E
+            C -- Controls --> R
+            REG -- Defines --> C
+            P -- Impacts --> C
+
+            style P fill:#bae6fd,stroke:#0284c7
+            style W fill:#bbf7d0,stroke:#16a34a
+            style E fill:#bbf7d0,stroke:#16a34a
+            style R fill:#bbf7d0,stroke:#16a34a
+            style C fill:#fde68a,stroke:#d97706
+            style REG fill:#fde68a,stroke:#d97706
+            style M fill:#bae6fd,stroke:#0284c7
+            style D fill:#bae6fd,stroke:#0284c7
+        ```
+        """,
+        unsafe_allow_html=True
+    )
+
 def regions_section():
     st.markdown('<div class="section-title">Regional Analysis</div>', unsafe_allow_html=True)
-
-    # Each region as a card
     st.markdown(
         """
         <div class="card">
@@ -350,13 +502,12 @@ def regions_section():
 def data_section():
     st.markdown('<div class="section-title">Data Requirements & Accessibility</div>', unsafe_allow_html=True)
 
-    # Three data categories as separate cards
     st.markdown('<div class="card bg-green-50">', unsafe_allow_html=True)
     st.markdown('<div class="card-title text-green-800">Easily Accessible Data</div>', unsafe_allow_html=True)
     st.markdown(
         """
         <ul class="card-list">
-            <li><strong>Regional Energy Consumption</strong><br/><em>Source: Department of Energy (DOE)</em></li>
+            <li><strong>Regional Energy Consumption</strong><br/><em>Source: DOE</em></li>
             <li><strong>Water Usage Permits</strong><br/><em>Source: State Environmental Agencies</em></li>
             <li><strong>Environmental Compliance Records</strong><br/><em>Source: EPA Database</em></li>
         </ul>
@@ -399,8 +550,8 @@ def equations_section():
     st.markdown('<div class="card">', unsafe_allow_html=True)
     st.markdown(
         """
-        <p>Below is a conceptual overview of a nonlinear dynamical system describing production (P),
-        water (W), energy (E), etc. in ASCII-friendly notation:</p>
+        <p>Below is a conceptual overview of a nonlinear dynamical system describing 
+        production (P), water (W), energy (E), etc. in ASCII-friendly notation:</p>
         """,
         unsafe_allow_html=True
     )
@@ -480,6 +631,5 @@ def results_section():
         )
         st.markdown('</div>', unsafe_allow_html=True)
 
-# 5) Run the app
 if __name__ == "__main__":
     main()
