@@ -60,18 +60,6 @@ elif page == "Objectives":
 elif page == "Methodology":
     st.header("Research Methodology")
     
-    # Display system equations
-    st.subheader("System Equations")
-    #st.latex(r'''
-    #\begin{align*}
-    #\frac{dP}{dt} &= \mu_1 M(t)E(t)W(t)(1 - \frac{P}{K}) - \delta_1 D(t)P^2 \\
-   # \frac{dW}{dt} &= \alpha_2 P(t)(1 - \frac{W}{W_{max}}) - \beta_2 R(t)W^2 - \delta_2 T(t) \\
-    #\frac{dE}{dt} &= [\alpha_1 P(t) + \beta_1 M(t)](1 - \frac{E}{E_{max}}) - \gamma_1 R(t)E^2 \\
-    #\frac{dC}{dt} &= \lambda_1(C^*(t) - C(t))^3 + \lambda_2 E(t)W(t) - \lambda_4 P(t)^2 \\
-    #\frac{dR}{dt} &= \sigma_1 C(t)^2 + \sigma_2(\frac{E(t)}{P(t)})^3 + \sigma_3(\frac{W(t)}{P(t)})^3 - \sigma_4 R(t)^2
-    #\end{align*}
-    #''')
-    
     st.subheader("Analysis Methods")
     methods = {
         "Stability Analysis": "Lyapunov stability analysis near equilibrium points",
