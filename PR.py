@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.graph_objects as go
 
 # Page Configuration
-st.set_page_config(layout="wide", page_title="Semiconductor Supply Chain Analysis"
+st.set_page_config(layout="wide", page_title="Semiconductor Supply Chain Analysis")
 
 # Title and Introduction
 st.title("Environmental-Economic Sensitivity Analysis of US Regional Semiconductor Supply Chains")
