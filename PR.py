@@ -144,25 +144,6 @@ if page == "Overview":
         - Future research directions
         """)
     
-    # Key Features in columns
-    col1, col2 = st.columns(2)
-    with col1:
-        st.subheader("Key Innovations")
-        st.write("""
-        - Nonlinear coupling of environmental-economic factors
-        - Regional sensitivity analysis framework
-        - Critical threshold identification methods
-        - Advanced stability analysis techniques
-        """)
-    
-    with col2:
-        st.subheader("Expected Impact")
-        st.write("""
-        - Enhanced supply chain resilience strategies
-        - Regional policy recommendations
-        - Sustainability-oriented manufacturing practices
-        - Improved risk assessment frameworks
-        """)
 
 elif page == "Objectives":
     st.header("Research Objectives")
