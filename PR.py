@@ -237,34 +237,124 @@ if page == "Overview":
             """)
     
     with tab3:
-        st.image("https://raw.githubusercontent.com/yourusername/yourrepo/main/research_flow.png", 
-                 caption="Research Architecture and Flow",
-                 use_column_width=True)
+        st.markdown("### Research Architecture and Flow")
         
+        # Create a visual flow using columns and styled boxes
         st.markdown("""
-        ### Research Implementation Steps
-        
-        1. **System Characterization**
-           - Identify key variables
-           - Define relationships
-           - Establish boundaries
-        
-        2. **Model Development**
-           - Formulate equations
-           - Define parameters
-           - Establish constraints
-        
-        3. **Analysis & Validation**
-           - Stability analysis
-           - Sensitivity testing
-           - Regional validation
-        
-        4. **Results & Recommendations**
-           - Policy guidelines
-           - Industry recommendations
-           - Implementation strategies
-        """)   
+        <style>
+        .research-box {
+            padding: 20px;
+            border-radius: 10px;
+            margin: 10px 0;
+            text-align: center;
+        }
+        .phase-1 { background-color: #f9d5e5; }
+        .phase-2 { background-color: #eff6ff; }
+        .phase-3 { background-color: #dcfce7; }
+        .phase-4 { background-color: #fef3c7; }
+        </style>
+        """, unsafe_allow_html=True)
 
+        # Phase 1: Problem Identification
+        st.markdown("""
+        <div class="research-box phase-1">
+            <h4>Phase 1: Problem Identification</h4>
+            <p>• Supply Chain Vulnerabilities<br>
+               • Environmental Challenges<br>
+               • Regional Dependencies<br>
+               • Regulatory Pressures</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Phase 2: Methodology Development
+        st.markdown("""
+        <div class="research-box phase-2">
+            <h4>Phase 2: Methodology Development</h4>
+            <p>• Nonlinear Dynamic Modeling<br>
+               • Regional Sensitivity Analysis<br>
+               • Environmental-Economic Coupling</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Phase 3: Implementation
+        st.markdown("""
+        <div class="research-box phase-3">
+            <h4>Phase 3: Implementation</h4>
+            <p>• Mathematical Framework<br>
+               • Data Analysis<br>
+               • Stability Assessment</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Phase 4: Impact
+        st.markdown("""
+        <div class="research-box phase-4">
+            <h4>Phase 4: Expected Impact</h4>
+            <p>• Industry Guidelines<br>
+               • Policy Recommendations<br>
+               • Resilience Strategies</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Implementation Steps
+        st.markdown("### Detailed Implementation Process")
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("""
+            #### Technical Implementation
+            1. **System Characterization**
+               - Variable identification
+               - Relationship mapping
+               - Boundary definition
+            
+            2. **Model Development**
+               - Equation formulation
+               - Parameter definition
+               - Constraint establishment
+            """)
+            
+        with col2:
+            st.markdown("""
+            #### Analysis & Output
+            3. **Analysis & Validation**
+               - Stability analysis
+               - Sensitivity testing
+               - Regional validation
+            
+            4. **Results & Recommendations**
+               - Policy guidelines
+               - Industry recommendations
+               - Implementation strategies
+            """)
+
+        # Key Outcomes
+        st.markdown("### Key Research Outcomes")
+        outcomes_cols = st.columns(3)
+        
+        with outcomes_cols[0]:
+            st.markdown("""
+            🎯 **Technical Outcomes**
+            - Mathematical models
+            - Analysis frameworks
+            - Validation methods
+            """)
+            
+        with outcomes_cols[1]:
+            st.markdown("""
+            📊 **Practical Outputs**
+            - Decision support tools
+            - Risk assessment methods
+            - Performance metrics
+            """)
+            
+        with outcomes_cols[2]:
+            st.markdown("""
+            🌍 **Impact Areas**
+            - Industry practices
+            - Policy development
+            - Sustainability goals
+            """)
 elif page == "Objectives":
     st.header("Research Objectives")
     
