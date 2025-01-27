@@ -58,9 +58,9 @@ elif page == "Objectives":
             st.write(description)
 
 elif page == "Methodology":
-    st.header("Research Methodology")
     
-    st.subheader("Analysis Methods")
+    
+    st.header("Analysis Methods")
     methods = {
         "Stability Analysis": "Lyapunov stability analysis near equilibrium points",
         "Bifurcation Analysis": "Identification of critical parameter thresholds",
