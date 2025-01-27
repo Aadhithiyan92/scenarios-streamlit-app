@@ -16,11 +16,133 @@ page = st.sidebar.selectbox(
 
 if page == "Overview":
     st.header("Research Overview")
+    
+    # Background and Motivation
+    st.subheader("Background & Motivation")
     st.write("""
-    This research introduces a novel nonlinear dynamical systems framework for analyzing 
-    the complex interactions between environmental sustainability factors and semiconductor 
-    supply chain resilience across key US manufacturing regions.
+    The US semiconductor industry faces unprecedented challenges in maintaining supply chain resilience 
+    while meeting environmental sustainability goals. Recent events have highlighted critical vulnerabilities:
     """)
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown("""
+        🔸 **Supply Chain Crisis**
+        - 2020-2023 global chip shortage
+        - Production bottlenecks
+        - Regional concentration risks
+        - Economic impacts
+        
+        🔸 **Environmental Pressures**
+        - Increasing water scarcity
+        - Rising energy demands
+        - Climate change impacts
+        - Resource constraints
+        """)
+    with col2:
+        st.markdown("""
+        🔸 **Regulatory Changes**
+        - Stricter environmental policies
+        - Sustainability requirements
+        - Carbon reduction targets
+        - Water usage regulations
+        
+        🔸 **Regional Dependencies**
+        - Water-stressed manufacturing zones
+        - Energy grid vulnerabilities
+        - Resource availability variations
+        - Geographic concentration risks
+        """)
+
+    # Previous Approaches
+    st.subheader("Previous Approaches & Limitations")
+    with st.expander("See previous approaches and their limitations"):
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown("""
+            **Traditional Approaches:**
+            - Linear supply chain models
+            - Static analysis methods
+            - Isolated regional studies
+            - Single-factor analysis
+            """)
+        with col2:
+            st.markdown("""
+            **Key Limitations:**
+            - Failed to capture complex interactions
+            - Missed dynamic system evolution
+            - Overlooked environmental coupling
+            - Ignored regional interdependencies
+            """)
+
+    # Our Novel Approach
+    st.subheader("Our Novel Approach")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown("#### Key Innovations")
+        st.markdown("""
+        - Nonlinear coupling of environmental-economic factors
+        - Regional sensitivity analysis framework
+        - Critical threshold identification methods
+        - Advanced stability analysis techniques
+        - Dynamic system evolution modeling
+        - Multi-regional interaction analysis
+        """)
+    with col2:
+        st.markdown("#### Expected Impact")
+        st.markdown("""
+        - Enhanced supply chain resilience strategies
+        - Regional policy recommendations
+        - Sustainability-oriented manufacturing practices
+        - Improved risk assessment frameworks
+        - Evidence-based decision support
+        - Adaptive management capabilities
+        """)
+
+    # Research Significance
+    st.subheader("Research Significance & Timing")
+    with st.expander("Why this research is crucial now"):
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown("""
+            **Current Drivers:**
+            - CHIPS Act Implementation
+            - Climate Change Impacts
+            - Supply Chain Vulnerabilities
+            - Environmental Regulations
+            """)
+        with col2:
+            st.markdown("""
+            **Strategic Value:**
+            - Guide manufacturing location decisions
+            - Enhance resource management
+            - Improve resilience planning
+            - Support policy development
+            """)
+
+    # Research Impact
+    st.subheader("Expected Research Impact")
+    impact_cols = st.columns(3)
+    with impact_cols[0]:
+        st.markdown("**Industry Impact**")
+        st.markdown("""
+        - Better decision-making tools
+        - Resource optimization
+        - Risk mitigation strategies
+        """)
+    with impact_cols[1]:
+        st.markdown("**Policy Guidance**")
+        st.markdown("""
+        - Evidence-based recommendations
+        - Balanced growth frameworks
+        - Sustainability guidelines
+        """)
+    with impact_cols[2]:
+        st.markdown("**Academic Contribution**")
+        st.markdown("""
+        - Novel mathematical framework
+        - Analytical methodology
+        - Future research directions
+        """)
     
     # Key Features in columns
     col1, col2 = st.columns(2)
