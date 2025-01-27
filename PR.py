@@ -143,7 +143,127 @@ if page == "Overview":
         - Analytical methodology
         - Future research directions
         """)
+ # Research Architecture
+    st.subheader("Research Architecture")
+    tab1, tab2, tab3 = st.tabs(["Why This Research?", "How We Approach It", "Research Flow"])
     
+    with tab1:
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown("""
+            ### Critical Industry Challenges
+            
+            🏭 **Manufacturing Sector Impact**
+            - $500B+ global semiconductor market
+            - Critical for technology advancement
+            - Essential for economic security
+            
+            🌍 **Environmental Concerns**
+            - High water consumption (10M+ gallons/day)
+            - Significant energy usage
+            - Environmental regulation compliance
+            
+            🔄 **Supply Chain Vulnerabilities**
+            - Geographic concentration risks
+            - Resource dependency issues
+            - Production bottlenecks
+            """)
+        
+        with col2:
+            st.markdown("""
+            ### Why Dynamic Systems Approach?
+            
+            📊 **Complex Interactions**
+            - Nonlinear relationships
+            - Multiple feedback loops
+            - Time-dependent behavior
+            
+            🎯 **Predictive Capabilities**
+            - Early warning indicators
+            - Stability assessment
+            - Risk prediction
+            
+            🔍 **System Understanding**
+            - Root cause analysis
+            - Parameter sensitivity
+            - Critical thresholds
+            """)
+    
+    with tab2:
+        st.markdown("""
+        ### Our Methodological Framework
+        
+        #### 1. System Modeling
+        - Nonlinear differential equations
+        - Coupled environmental-economic variables
+        - Regional parameter variations
+        
+        #### 2. Analysis Techniques
+        - Stability analysis using Lyapunov methods
+        - Bifurcation analysis for critical points
+        - Sensitivity analysis for key parameters
+        
+        #### 3. Validation & Implementation
+        - Data-driven validation
+        - Regional case studies
+        - Industry feedback integration
+        """)
+        
+        st.markdown("### Key Mathematical Components")
+        math_cols = st.columns(3)
+        with math_cols[0]:
+            st.markdown("""
+            **State Variables**
+            - Production Capacity (P)
+            - Water Availability (W)
+            - Energy Supply (E)
+            - Resource Efficiency (R)
+            """)
+        with math_cols[1]:
+            st.markdown("""
+            **Control Parameters**
+            - Production rates
+            - Resource utilization
+            - Environmental limits
+            - Efficiency factors
+            """)
+        with math_cols[2]:
+            st.markdown("""
+            **Output Metrics**
+            - Stability indices
+            - Risk indicators
+            - Performance measures
+            - Resilience metrics
+            """)
+    
+    with tab3:
+        st.image("https://raw.githubusercontent.com/yourusername/yourrepo/main/research_flow.png", 
+                 caption="Research Architecture and Flow",
+                 use_column_width=True)
+        
+        st.markdown("""
+        ### Research Implementation Steps
+        
+        1. **System Characterization**
+           - Identify key variables
+           - Define relationships
+           - Establish boundaries
+        
+        2. **Model Development**
+           - Formulate equations
+           - Define parameters
+           - Establish constraints
+        
+        3. **Analysis & Validation**
+           - Stability analysis
+           - Sensitivity testing
+           - Regional validation
+        
+        4. **Results & Recommendations**
+           - Policy guidelines
+           - Industry recommendations
+           - Implementation strategies
+        """)   
 
 elif page == "Objectives":
     st.header("Research Objectives")
