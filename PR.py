@@ -8,10 +8,10 @@ st.set_page_config(layout="wide", page_title="Semiconductor Supply Chain Analysi
 # Title and Introduction
 st.title("Environmental-Economic Sensitivity Analysis of US Regional Semiconductor Supply Chains")
 
-# Sidebar for Navigation
+# Sidebar Navigation
 page = st.sidebar.selectbox(
     "Select Section",
-    ["Overview", "Objectives", "Methodology", "Data Requirements", "Regional Analysis", "Results"]
+    ["Overview", "Research Architecture", "Objectives", "Methodology", "Data Requirements", "Regional Analysis", "Results"]
 )
 
 if page == "Overview":
@@ -143,119 +143,40 @@ if page == "Overview":
         - Analytical methodology
         - Future research directions
         """)
- # Research Architecture
-    st.subheader("Research Architecture")
-    tab1, tab2, tab3 = st.tabs(["Why This Research?", "How We Approach It", "Research Flow"])
-    
-    with tab1:
-        col1, col2 = st.columns(2)
-        with col1:
-            st.markdown("""
-            ### Critical Industry Challenges
-            
-            🏭 **Manufacturing Sector Impact**
-            - $500B+ global semiconductor market
-            - Critical for technology advancement
-            - Essential for economic security
-            
-            🌍 **Environmental Concerns**
-            - High water consumption (10M+ gallons/day)
-            - Significant energy usage
-            - Environmental regulation compliance
-            
-            🔄 **Supply Chain Vulnerabilities**
-            - Geographic concentration risks
-            - Resource dependency issues
-            - Production bottlenecks
-            """)
-        
-        with col2:
-            st.markdown("""
-            ### Why Dynamic Systems Approach?
-            
-            📊 **Complex Interactions**
-            - Nonlinear relationships
-            - Multiple feedback loops
-            - Time-dependent behavior
-            
-            🎯 **Predictive Capabilities**
-            - Early warning indicators
-            - Stability assessment
-            - Risk prediction
-            
-            🔍 **System Understanding**
-            - Root cause analysis
-            - Parameter sensitivity
-            - Critical thresholds
-            """)
-    
-    with tab2:
-        st.markdown("""
-        ### Our Methodological Framework
-        
-        #### 1. System Modeling
-        - Nonlinear differential equations
-        - Coupled environmental-economic variables
-        - Regional parameter variations
-        
-        #### 2. Analysis Techniques
-        - Stability analysis using Lyapunov methods
-        - Bifurcation analysis for critical points
-        - Sensitivity analysis for key parameters
-        
-        #### 3. Validation & Implementation
-        - Data-driven validation
-        - Regional case studies
-        - Industry feedback integration
-        """)
-        
-        st.markdown("### Key Mathematical Components")
-        math_cols = st.columns(3)
-        with math_cols[0]:
-            st.markdown("""
-            **State Variables**
-            - Production Capacity (P)
-            - Water Availability (W)
-            - Energy Supply (E)
-            - Resource Efficiency (R)
-            """)
-        with math_cols[1]:
-            st.markdown("""
-            **Control Parameters**
-            - Production rates
-            - Resource utilization
-            - Environmental limits
-            - Efficiency factors
-            """)
-        with math_cols[2]:
-            st.markdown("""
-            **Output Metrics**
-            - Stability indices
-            - Risk indicators
-            - Performance measures
-            - Resilience metrics
-            """)
-    
-    with tab3:
-        st.markdown("### Research Architecture and Flow")
-        
-        # Create a visual flow using columns and styled boxes
-        st.markdown("""
-        <style>
-        .research-box {
-            padding: 20px;
-            border-radius: 10px;
-            margin: 10px 0;
-            text-align: center;
-        }
-        .phase-1 { background-color: #f9d5e5; }
-        .phase-2 { background-color: #eff6ff; }
-        .phase-3 { background-color: #dcfce7; }
-        .phase-4 { background-color: #fef3c7; }
-        </style>
-        """, unsafe_allow_html=True)
 
-        # Phase 1: Problem Identification
+elif page == "Research Architecture":
+    st.header("Research Architecture and Flow")
+    
+    # Create visual flow using styled boxes
+    st.markdown("""
+    <style>
+    .research-box {
+        padding: 20px;
+        border-radius: 10px;
+        margin: 10px 0;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .phase-1 { background-color: #f9d5e5; }
+    .phase-2 { background-color: #eff6ff; }
+    .phase-3 { background-color: #dcfce7; }
+    .phase-4 { background-color: #fef3c7; }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # Research Flow Visualization
+    col1, col2 = st.columns([1, 3])
+    
+    with col1:
+        st.markdown("### Research Flow")
+        st.markdown("""
+        This diagram shows the complete
+        flow of our research from problem
+        identification to impact generation.
+        """)
+    
+    with col2:
+        # Phase boxes
         st.markdown("""
         <div class="research-box phase-1">
             <h4>Phase 1: Problem Identification</h4>
@@ -264,30 +185,21 @@ if page == "Overview":
                • Regional Dependencies<br>
                • Regulatory Pressures</p>
         </div>
-        """, unsafe_allow_html=True)
-
-        # Phase 2: Methodology Development
-        st.markdown("""
+        
         <div class="research-box phase-2">
-            <h4>Phase 2: Methodology Development</h4>
+            <h4>Phase 2: Our Approach</h4>
             <p>• Nonlinear Dynamic Modeling<br>
                • Regional Sensitivity Analysis<br>
                • Environmental-Economic Coupling</p>
         </div>
-        """, unsafe_allow_html=True)
-
-        # Phase 3: Implementation
-        st.markdown("""
+        
         <div class="research-box phase-3">
             <h4>Phase 3: Implementation</h4>
             <p>• Mathematical Framework<br>
                • Data Analysis<br>
                • Stability Assessment</p>
         </div>
-        """, unsafe_allow_html=True)
-
-        # Phase 4: Impact
-        st.markdown("""
+        
         <div class="research-box phase-4">
             <h4>Phase 4: Expected Impact</h4>
             <p>• Industry Guidelines<br>
@@ -296,65 +208,65 @@ if page == "Overview":
         </div>
         """, unsafe_allow_html=True)
 
-        # Implementation Steps
-        st.markdown("### Detailed Implementation Process")
-        col1, col2 = st.columns(2)
+    # Methodology Details
+    st.subheader("Detailed Methodology")
+    method_col1, method_col2, method_col3 = st.columns(3)
+    
+    with method_col1:
+        st.markdown("""
+        #### System Modeling
+        - Nonlinear differential equations
+        - Environmental coupling
+        - Regional parameters
+        """)
         
-        with col1:
-            st.markdown("""
-            #### Technical Implementation
-            1. **System Characterization**
-               - Variable identification
-               - Relationship mapping
-               - Boundary definition
-            
-            2. **Model Development**
-               - Equation formulation
-               - Parameter definition
-               - Constraint establishment
-            """)
-            
-        with col2:
-            st.markdown("""
-            #### Analysis & Output
-            3. **Analysis & Validation**
-               - Stability analysis
-               - Sensitivity testing
-               - Regional validation
-            
-            4. **Results & Recommendations**
-               - Policy guidelines
-               - Industry recommendations
-               - Implementation strategies
-            """)
+    with method_col2:
+        st.markdown("""
+        #### Analysis Techniques
+        - Stability analysis
+        - Sensitivity testing
+        - Bifurcation analysis
+        """)
+        
+    with method_col3:
+        st.markdown("""
+        #### Validation Process
+        - Data verification
+        - Regional case studies
+        - Industry feedback
+        """)
 
-        # Key Outcomes
-        st.markdown("### Key Research Outcomes")
-        outcomes_cols = st.columns(3)
+    # Key Components
+    st.subheader("Research Components")
+    comp_col1, comp_col2 = st.columns(2)
+    
+    with comp_col1:
+        st.markdown("""
+        ### Technical Framework
+        1. **Mathematical Model**
+           - State variables definition
+           - System equations
+           - Parameter identification
         
-        with outcomes_cols[0]:
-            st.markdown("""
-            🎯 **Technical Outcomes**
-            - Mathematical models
-            - Analysis frameworks
-            - Validation methods
-            """)
-            
-        with outcomes_cols[1]:
-            st.markdown("""
-            📊 **Practical Outputs**
-            - Decision support tools
-            - Risk assessment methods
-            - Performance metrics
-            """)
-            
-        with outcomes_cols[2]:
-            st.markdown("""
-            🌍 **Impact Areas**
-            - Industry practices
-            - Policy development
-            - Sustainability goals
-            """)
+        2. **Analysis Methods**
+           - Stability assessment
+           - Sensitivity analysis
+           - Regional comparison
+        """)
+        
+    with comp_col2:
+        st.markdown("""
+        ### Implementation Strategy
+        1. **Data Collection**
+           - Environmental metrics
+           - Production data
+           - Regional characteristics
+        
+        2. **Validation Process**
+           - Model verification
+           - Results validation
+           - Impact assessment
+        """)
 elif page == "Objectives":
     st.header("Research Objectives")
     
