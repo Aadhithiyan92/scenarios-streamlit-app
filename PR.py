@@ -692,24 +692,4 @@ elif page == "Product Development":
     - Continuous improvement
     """)
 
-    # Key Benefits
-    st.subheader("Key Benefits & ROI")
-    benefit_cols = st.columns(2)
     
-    with benefit_cols[0]:
-        st.markdown("""
-        ### 📈 Quantitative Benefits
-        - Reduce disruption risks by 30%
-        - Optimize resource usage by 25%
-        - Improve response time by 40%
-        - Decrease operational costs by 20%
-        """)
-    
-    with benefit_cols[1]:
-        st.markdown("""
-        ### 🌟 Qualitative Benefits
-        - Enhanced decision making
-        - Improved sustainability
-        - Better regulatory compliance
-        - Increased resilience
-        """)
