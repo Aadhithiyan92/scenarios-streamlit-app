@@ -11,7 +11,8 @@ st.title("Environmental-Economic Sensitivity Analysis of US Regional Semiconduct
 # Sidebar Navigation
 page = st.sidebar.selectbox(
     "Select Section",
-    ["Overview", "Research Architecture", "Objectives", "Data Requirements", "Regional Analysis", "Results"]
+    ["Overview", "Research Architecture", "Objectives", "Data Requirements", 
+     "Regional Analysis", "Results", "Product Development"]
 )
 
 if page == "Overview":
@@ -523,3 +524,141 @@ elif page == "Results":
         ]
         for application in applications:
             st.write(f"• {application}")
+    elif page == "Product Development":
+    st.header("Product Development & Implementation")
+
+    # Main Product Vision
+    st.markdown("""
+    <div style='background-color: #f0f9ff; padding: 20px; border-radius: 10px; border-left: 5px solid #0369a1;'>
+        <h3 style='color: #0369a1; margin-top: 0;'>Product Vision</h3>
+        <p>Converting our mathematical framework into practical decision-support tools for semiconductor industry stakeholders.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Product Components
+    st.subheader("Key Product Components")
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("""
+        ### 🎯 Decision Support Dashboard
+        
+        **Features:**
+        - Real-time risk monitoring
+        - Environmental metrics tracking
+        - Economic impact prediction
+        - Resource optimization tools
+        
+        **Users:**
+        - Facility Managers
+        - Supply Chain Directors
+        - Risk Assessment Teams
+        """)
+    
+    with col2:
+        st.markdown("""
+        ### 📊 Analytics Platform
+        
+        **Capabilities:**
+        - Predictive analytics
+        - Scenario modeling
+        - Cost-benefit analysis
+        - Performance optimization
+        
+        **Applications:**
+        - Resource planning
+        - Investment decisions
+        - Emergency response
+        - Compliance management
+        """)
+
+    # Target Users
+    st.subheader("Who Benefits?")
+    
+    user_cols = st.columns(3)
+    
+    with user_cols[0]:
+        st.markdown("""
+        ### 🏭 Industry
+        - Manufacturing facilities
+        - Supply chain managers
+        - Operations directors
+        - Environmental teams
+        
+        **Value:**
+        - Risk mitigation
+        - Cost optimization
+        - Resource efficiency
+        """)
+    
+    with user_cols[1]:
+        st.markdown("""
+        ### 📋 Policy Makers
+        - State regulators
+        - Environmental agencies
+        - Economic planners
+        - Regional authorities
+        
+        **Value:**
+        - Evidence-based policies
+        - Regional planning
+        - Impact assessment
+        """)
+    
+    with user_cols[2]:
+        st.markdown("""
+        ### 🔍 Researchers
+        - Academic institutions
+        - R&D departments
+        - Industry analysts
+        - Sustainability experts
+        
+        **Value:**
+        - Model validation
+        - Data analysis
+        - Trend identification
+        """)
+
+    # Implementation Path
+    st.subheader("Implementation Roadmap")
+    
+    implementation = st.container()
+    with implementation:
+        st.markdown("""
+        #### Phase 1: Development
+        - Core algorithm implementation
+        - User interface design
+        - Initial testing and validation
+        
+        #### Phase 2: Pilot Program
+        - Beta testing with select facilities
+        - User feedback collection
+        - Performance optimization
+        
+        #### Phase 3: Full Deployment
+        - Industry-wide rollout
+        - Training and support
+        - Continuous improvement
+        """)
+
+    # Key Benefits
+    st.subheader("Key Benefits & ROI")
+    benefit_cols = st.columns(2)
+    
+    with benefit_cols[0]:
+        st.markdown("""
+        ### 📈 Quantitative Benefits
+        - Reduce disruption risks by 30%
+        - Optimize resource usage by 25%
+        - Improve response time by 40%
+        - Decrease operational costs by 20%
+        """)
+    
+    with benefit_cols[1]:
+        st.markdown("""
+        ### 🌟 Qualitative Benefits
+        - Enhanced decision making
+        - Improved sustainability
+        - Better regulatory compliance
+        - Increased resilience
+        """)
