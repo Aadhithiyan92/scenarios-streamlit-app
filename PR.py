@@ -52,7 +52,47 @@ if page == "Overview":
         - Resource availability variations
         - Geographic concentration risks
         """)
-
+# Environmental-Economic Relationship
+    st.subheader("Environmental-Economic Relationship")
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("""
+        🌍 **Environmental Factors**
+        - Water Availability
+          • Manufacturing needs ~10M gallons/day
+          • Water scarcity issues
+          • Quality requirements
+        
+        - Energy Resources
+          • High power consumption
+          • Grid reliability
+          • Clean energy transition
+        
+        - Climate Impact
+          • Temperature control needs
+          • Extreme weather risks
+          • Cooling requirements
+        """)
+    
+    with col2:
+        st.markdown("""
+        💰 **Economic Impacts**
+        - Cost Effects
+          • Higher water procurement costs
+          • Energy price fluctuations
+          • Infrastructure investments
+        
+        - Production Impact
+          • Capacity limitations
+          • Efficiency losses
+          • Operating cost increases
+        
+        - Investment Needs
+          • Recycling systems
+          • Backup power solutions
+          • Technology upgrades
+        """)
     # Previous Approaches
     st.subheader("Previous Approaches & Limitations")
     with st.expander("See previous approaches and their limitations"):
@@ -97,47 +137,7 @@ if page == "Overview":
         - Evidence-based decision support
         - Adaptive management capabilities
         """)
-# Environmental-Economic Relationship
-    st.subheader("Environmental-Economic Relationship")
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.markdown("""
-        🌍 **Environmental Factors**
-        - Water Availability
-          • Manufacturing needs ~10M gallons/day
-          • Water scarcity issues
-          • Quality requirements
-        
-        - Energy Resources
-          • High power consumption
-          • Grid reliability
-          • Clean energy transition
-        
-        - Climate Impact
-          • Temperature control needs
-          • Extreme weather risks
-          • Cooling requirements
-        """)
-    
-    with col2:
-        st.markdown("""
-        💰 **Economic Impacts**
-        - Cost Effects
-          • Higher water procurement costs
-          • Energy price fluctuations
-          • Infrastructure investments
-        
-        - Production Impact
-          • Capacity limitations
-          • Efficiency losses
-          • Operating cost increases
-        
-        - Investment Needs
-          • Recycling systems
-          • Backup power solutions
-          • Technology upgrades
-        """)
+
     # Research Significance
     st.subheader("Research Significance & Timing")
     with st.expander("Why this research is crucial now"):
