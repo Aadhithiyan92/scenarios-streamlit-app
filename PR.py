@@ -488,44 +488,96 @@ elif page == "Regional Analysis":
 
 
 elif page == "Results":
-    st.header("Expected Results")
+    st.header("Expected Results & Outcomes")
     
-    # Create three columns for different result categories
-    col1, col2, col3 = st.columns(3)
+    # Main Research Outcomes
+    st.markdown("""
+    <div style='background-color: #f0f9ff; padding: 20px; border-radius: 10px; border-left: 5px solid #0369a1;'>
+        <h3 style='color: #0369a1; margin-top: 0;'>Key Research Outcomes</h3>
+        <p>Development of comprehensive framework for environmental-economic sensitivity analysis 
+        of semiconductor supply chains across US regions.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Technical Results
+    st.subheader("Technical Results")
+    tech_col1, tech_col2 = st.columns(2)
     
-    with col1:
-        st.subheader("Research Outcomes")
-        outcomes = [
-            "Regional Stability Maps",
-            "Sensitivity Metrics",
-            "Risk Assessment Framework",
-            "Parameter Thresholds"
-        ]
-        for outcome in outcomes:
-            st.write(f"• {outcome}")
+    with tech_col1:
+        st.markdown("""
+        ### 🔍 Mathematical Models
+        - Nonlinear dynamical system equations
+        - Regional sensitivity metrics
+        - Stability analysis frameworks
+        - Parameter optimization methods
+        """)
     
-    with col2:
-        st.subheader("Expected Impact")
-        impacts = [
-            "Policy Recommendations",
-            "Industry Guidelines",
-            "Resilience Strategies",
-            "Best Practices"
-        ]
-        for impact in impacts:
-            st.write(f"• {impact}")
+    with tech_col2:
+        st.markdown("""
+        ### 📊 Analysis Tools
+        - Risk assessment algorithms
+        - Predictive models
+        - Resource optimization tools
+        - Performance metrics
+        """)
+
+    # Regional Insights
+    st.subheader("Regional Insights")
+    st.markdown("""
+    #### Key Regional Findings:
+    1. **Southwest Region (AZ, NM)**
+       - Water scarcity thresholds
+       - Energy efficiency requirements
+       - Sustainability metrics
     
-    with col3:
-        st.subheader("Future Applications")
-        applications = [
-            "Model Extension",
-            "Decision Support",
-            "Risk Management",
-            "Strategic Planning"
-        ]
-        for application in applications:
-            st.write(f"• {application}")
-   elif page == "Product Development":
+    2. **Pacific Northwest (OR, WA)**
+       - Renewable energy integration
+       - Water resource management
+       - Environmental compliance
+    
+    3. **Texas Region**
+       - Grid reliability factors
+       - Climate impact assessments
+       - Resource optimization
+    
+    4. **Northeast (NY)**
+       - Regulatory compliance strategies
+       - Resource efficiency metrics
+       - Sustainability benchmarks
+    """)
+
+    # Practical Applications
+    st.subheader("Practical Applications")
+    app_cols = st.columns(3)
+    
+    with app_cols[0]:
+        st.markdown("""
+        ### 🏭 Industry Impact
+        - Supply chain optimization
+        - Risk mitigation strategies
+        - Resource management plans
+        - Cost reduction methods
+        """)
+    
+    with app_cols[1]:
+        st.markdown("""
+        ### 📋 Policy Guidance
+        - Environmental regulations
+        - Resource allocation
+        - Regional development
+        - Sustainability goals
+        """)
+    
+    with app_cols[2]:
+        st.markdown("""
+        ### 🔬 Research Value
+        - Methodology advancement
+        - Data analysis frameworks
+        - Modeling techniques
+        - Validation methods
+        """)
+
+elif page == "Product Development":
     st.header("Product Development & Implementation")
 
     # Main Product Vision
@@ -660,4 +712,4 @@ elif page == "Results":
         - Improved sustainability
         - Better regulatory compliance
         - Increased resilience
-        """)  
+        """)
