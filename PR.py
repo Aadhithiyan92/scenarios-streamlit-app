@@ -11,7 +11,7 @@ st.title("Environmental-Economic Sensitivity Analysis of US Regional Semiconduct
 # Sidebar Navigation
 page = st.sidebar.selectbox(
     "Select Section",
-    ["Overview", "Research Architecture", "Objectives", "Methodology", "Data Requirements", "Regional Analysis", "Results"]
+    ["Overview", "Research Architecture", "Objectives", "Data Requirements", "Regional Analysis", "Results"]
 )
 
 if page == "Overview":
@@ -314,8 +314,7 @@ elif page == "Objectives":
     st.markdown("""
     <div style='background-color: #f0f9ff; padding: 20px; border-radius: 10px; border-left: 5px solid #0369a1;'>
         <h3 style='color: #0369a1; margin-top: 0;'>Primary Research Goal</h3>
-        <p>Develop a comprehensive framework for analyzing and enhancing the environmental-economic 
-        resilience of US semiconductor supply chains through nonlinear dynamical systems modeling.</p>
+        <p>To develop a mathematical framework that predicts and prevents semiconductor supply chain disruptions caused by environmental factors in different US regions.</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -408,19 +407,7 @@ elif page == "Objectives":
         - Sustainability goals
         """)
 
-elif page == "Methodology":
-    
-    
-    st.header("Analysis Methods")
-    methods = {
-        "Stability Analysis": "Lyapunov stability analysis near equilibrium points",
-        "Bifurcation Analysis": "Identification of critical parameter thresholds",
-        "Sensitivity Analysis": "Parameter impact assessment",
-        "Regional Comparison": "Comparative analysis across different US regions"
-    }
-    
-    for method, description in methods.items():
-        st.markdown(f"**{method}:** {description}")
+
 
 elif page == "Data Requirements":
     st.header("Data Requirements")
