@@ -485,46 +485,7 @@ elif page == "Regional Analysis":
                 st.markdown("**Opportunities**")
                 for item in details["Opportunities"]:
                     st.write(f"• {item}")
-
-elif page == "Results":
-    st.header("Expected Results")
-    
-    # Create three columns for different result categories
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        st.subheader("Research Outcomes")
-        outcomes = [
-            "Regional Stability Maps",
-            "Sensitivity Metrics",
-            "Risk Assessment Framework",
-            "Parameter Thresholds"
-        ]
-        for outcome in outcomes:
-            st.write(f"• {outcome}")
-    
-    with col2:
-        st.subheader("Expected Impact")
-        impacts = [
-            "Policy Recommendations",
-            "Industry Guidelines",
-            "Resilience Strategies",
-            "Best Practices"
-        ]
-        for impact in impacts:
-            st.write(f"• {impact}")
-    
-    with col3:
-        st.subheader("Future Applications")
-        applications = [
-            "Model Extension",
-            "Decision Support",
-            "Risk Management",
-            "Strategic Planning"
-        ]
-        for application in applications:
-            st.write(f"• {application}")
-    elif page == "Product Development":
+        elif page == "Product Development":
     st.header("Product Development & Implementation")
 
     # Main Product Vision
@@ -662,3 +623,43 @@ elif page == "Results":
         - Better regulatory compliance
         - Increased resilience
         """)
+
+elif page == "Results":
+    st.header("Expected Results")
+    
+    # Create three columns for different result categories
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.subheader("Research Outcomes")
+        outcomes = [
+            "Regional Stability Maps",
+            "Sensitivity Metrics",
+            "Risk Assessment Framework",
+            "Parameter Thresholds"
+        ]
+        for outcome in outcomes:
+            st.write(f"• {outcome}")
+    
+    with col2:
+        st.subheader("Expected Impact")
+        impacts = [
+            "Policy Recommendations",
+            "Industry Guidelines",
+            "Resilience Strategies",
+            "Best Practices"
+        ]
+        for impact in impacts:
+            st.write(f"• {impact}")
+    
+    with col3:
+        st.subheader("Future Applications")
+        applications = [
+            "Model Extension",
+            "Decision Support",
+            "Risk Management",
+            "Strategic Planning"
+        ]
+        for application in applications:
+            st.write(f"• {application}")
+
