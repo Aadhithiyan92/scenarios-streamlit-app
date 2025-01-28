@@ -8,7 +8,7 @@ st.set_page_config(layout="wide", page_title="Semiconductor Supply Chain Analysi
 # Title and Introduction
 st.title("Environmental-Economic Sensitivity Analysis of US Regional Semiconductor Supply Chains")
 
-# Sidebar Navigation
+# Updated Sidebar Navigation
 page = st.sidebar.selectbox(
     "Select Section",
     ["Overview", "Research Architecture", "Objectives", "Data Requirements", 
@@ -485,7 +485,47 @@ elif page == "Regional Analysis":
                 st.markdown("**Opportunities**")
                 for item in details["Opportunities"]:
                     st.write(f"• {item}")
-        elif page == "Product Development":
+
+
+elif page == "Results":
+    st.header("Expected Results")
+    
+    # Create three columns for different result categories
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.subheader("Research Outcomes")
+        outcomes = [
+            "Regional Stability Maps",
+            "Sensitivity Metrics",
+            "Risk Assessment Framework",
+            "Parameter Thresholds"
+        ]
+        for outcome in outcomes:
+            st.write(f"• {outcome}")
+    
+    with col2:
+        st.subheader("Expected Impact")
+        impacts = [
+            "Policy Recommendations",
+            "Industry Guidelines",
+            "Resilience Strategies",
+            "Best Practices"
+        ]
+        for impact in impacts:
+            st.write(f"• {impact}")
+    
+    with col3:
+        st.subheader("Future Applications")
+        applications = [
+            "Model Extension",
+            "Decision Support",
+            "Risk Management",
+            "Strategic Planning"
+        ]
+        for application in applications:
+            st.write(f"• {application}")
+   elif page == "Product Development":
     st.header("Product Development & Implementation")
 
     # Main Product Vision
@@ -583,24 +623,22 @@ elif page == "Regional Analysis":
     # Implementation Path
     st.subheader("Implementation Roadmap")
     
-    implementation = st.container()
-    with implementation:
-        st.markdown("""
-        #### Phase 1: Development
-        - Core algorithm implementation
-        - User interface design
-        - Initial testing and validation
-        
-        #### Phase 2: Pilot Program
-        - Beta testing with select facilities
-        - User feedback collection
-        - Performance optimization
-        
-        #### Phase 3: Full Deployment
-        - Industry-wide rollout
-        - Training and support
-        - Continuous improvement
-        """)
+    st.markdown("""
+    #### Phase 1: Development
+    - Core algorithm implementation
+    - User interface design
+    - Initial testing and validation
+    
+    #### Phase 2: Pilot Program
+    - Beta testing with select facilities
+    - User feedback collection
+    - Performance optimization
+    
+    #### Phase 3: Full Deployment
+    - Industry-wide rollout
+    - Training and support
+    - Continuous improvement
+    """)
 
     # Key Benefits
     st.subheader("Key Benefits & ROI")
@@ -622,44 +660,4 @@ elif page == "Regional Analysis":
         - Improved sustainability
         - Better regulatory compliance
         - Increased resilience
-        """)
-
-elif page == "Results":
-    st.header("Expected Results")
-    
-    # Create three columns for different result categories
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        st.subheader("Research Outcomes")
-        outcomes = [
-            "Regional Stability Maps",
-            "Sensitivity Metrics",
-            "Risk Assessment Framework",
-            "Parameter Thresholds"
-        ]
-        for outcome in outcomes:
-            st.write(f"• {outcome}")
-    
-    with col2:
-        st.subheader("Expected Impact")
-        impacts = [
-            "Policy Recommendations",
-            "Industry Guidelines",
-            "Resilience Strategies",
-            "Best Practices"
-        ]
-        for impact in impacts:
-            st.write(f"• {impact}")
-    
-    with col3:
-        st.subheader("Future Applications")
-        applications = [
-            "Model Extension",
-            "Decision Support",
-            "Risk Management",
-            "Strategic Planning"
-        ]
-        for application in applications:
-            st.write(f"• {application}")
-
+        """)  
