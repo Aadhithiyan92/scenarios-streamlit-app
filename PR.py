@@ -270,17 +270,103 @@ elif page == "Research Architecture":
 elif page == "Objectives":
     st.header("Research Objectives")
     
-    st.subheader("Primary Objectives")
-    objectives = {
-        "System Modeling": "Develop a nonlinear dynamical system incorporating environmental-economic coupling",
-        "Regional Analysis": "Analyze sensitivity across different US manufacturing regions",
-        "Stability Assessment": "Identify critical thresholds and stability boundaries",
-        "Policy Impact": "Develop strategic recommendations for regional resilience"
+    # Main Research Goal
+    st.markdown("""
+    <div style='background-color: #f0f9ff; padding: 20px; border-radius: 10px; border-left: 5px solid #0369a1;'>
+        <h3 style='color: #0369a1; margin-top: 0;'>Primary Research Goal</h3>
+        <p>Develop a comprehensive framework for analyzing and enhancing the environmental-economic 
+        resilience of US semiconductor supply chains through nonlinear dynamical systems modeling.</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Specific Objectives with icons
+    st.subheader("Specific Objectives")
+    
+    objectives_data = {
+        "Modeling & Analysis": {
+            "icon": "📊",
+            "objectives": [
+                "Develop nonlinear dynamical system models",
+                "Implement regional sensitivity analysis",
+                "Identify critical thresholds",
+                "Analyze stability boundaries"
+            ],
+            "color": "#bae6fd"
+        },
+        "Environmental Integration": {
+            "icon": "🌍",
+            "objectives": [
+                "Quantify environmental constraints",
+                "Model resource dependencies",
+                "Assess sustainability metrics",
+                "Evaluate ecological impacts"
+            ],
+            "color": "#bbf7d0"
+        },
+        "Regional Assessment": {
+            "icon": "🏢",
+            "objectives": [
+                "Compare regional characteristics",
+                "Analyze geographic variations",
+                "Evaluate resource availability",
+                "Assess regional risks"
+            ],
+            "color": "#fde68a"
+        },
+        "Policy & Implementation": {
+            "icon": "📋",
+            "objectives": [
+                "Develop policy recommendations",
+                "Create implementation guidelines",
+                "Design resilience strategies",
+                "Establish monitoring frameworks"
+            ],
+            "color": "#fecaca"
+        }
     }
     
-    for title, description in objectives.items():
-        with st.expander(title):
-            st.write(description)
+    # Create a 2x2 grid of objective categories
+    col1, col2 = st.columns(2)
+    cols = [col1, col2] * 2  # Repeat columns for 4 items
+    
+    for idx, (category, data) in enumerate(objectives_data.items()):
+        with cols[idx]:
+            st.markdown(f"""
+            <div style='background-color: {data["color"]}; padding: 20px; border-radius: 10px; margin: 10px 0;'>
+                <h3>{data["icon"]} {category}</h3>
+                <ul style='list-style-type: none; padding-left: 0;'>
+                    {"".join(f"<li style='margin: 10px 0;'>• {obj}</li>" for obj in data["objectives"])}
+                </ul>
+            </div>
+            """, unsafe_allow_html=True)
+    
+    # Expected Outcomes
+    st.subheader("Expected Outcomes")
+    outcomes_col1, outcomes_col2, outcomes_col3 = st.columns(3)
+    
+    with outcomes_col1:
+        st.markdown("""
+        #### 🎯 Technical Outcomes
+        - Mathematical models
+        - Analysis frameworks
+        - Validation methods
+        """)
+    
+    with outcomes_col2:
+        st.markdown("""
+        #### 📈 Practical Outputs
+        - Decision support tools
+        - Risk assessment methods
+        - Performance metrics
+        """)
+    
+    with outcomes_col3:
+        st.markdown("""
+        #### 🌟 Impact Areas
+        - Industry practices
+        - Policy development
+        - Sustainability goals
+        """)
 
 elif page == "Methodology":
     
