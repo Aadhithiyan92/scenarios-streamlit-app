@@ -15,7 +15,7 @@ st.set_page_config(
 # Create sidebar
 st.sidebar.image("https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/TSMC_Logo.svg/1200px-TSMC_Logo.svg.png", width=200)
 st.sidebar.title("Research Navigation")
-page = st.sidebar.radio("Select Page", ["Project Overview", "Data Availability", "Methodology Approach", "Model Validation Plan", "Expected Outcomes"])
+page = st.sidebar.radio("Select Page", ["Project Overview", "Data Availability", "Methodology Approach", "Expected Outcomes"])
 
 # Create header
 st.title("Environmental-Economic Impact Analysis of Semiconductor Supply Chain")
@@ -172,68 +172,7 @@ elif page == "Methodology Approach":
         for item in components["Resilience Metrics"]:
             st.markdown(f"- {item}")
 
-# Model Validation Plan page
-elif page == "Model Validation Plan":
-    st.header("Model Validation Strategy")
-    
-    st.markdown("""
-    ### Validation Approach
-    
-    To ensure our model is robust enough to transfer from Taiwan to Arizona operations,
-    we will implement the following validation strategy:
-    """)
-    
-    validation_steps = [
-        "Historical data validation against Taiwan operations",
-        "Sensitivity analysis for key environmental parameters",
-        "Monte Carlo simulations for uncertainty quantification",
-        "Cross-validation with industry benchmarks",
-        "Expert panel review of model assumptions",
-        "Geospatial factor adjustment for Arizona context"
-    ]
-    
-    for i, step in enumerate(validation_steps):
-        st.markdown(f"**Step {i+1}:** {step}")
-    
-    st.markdown("---")
-    
-    # Sample validation visualization
-    st.subheader("Model Accuracy Simulation")
-    
-    # Create sample data for demonstration
-    np.random.seed(42)
-    actual = np.sort(np.random.normal(100, 15, 50))
-    predicted = actual + np.random.normal(0, 10, 50)
-    
-    fig, ax = plt.subplots(figsize=(10, 6))
-    ax.scatter(actual, predicted, alpha=0.5)
-    
-    # Add perfect prediction line
-    min_val = min(min(actual), min(predicted))
-    max_val = max(max(actual), max(predicted))
-    ax.plot([min_val, max_val], [min_val, max_val], 'r--')
-    
-    ax.set_xlabel('Actual Values')
-    ax.set_ylabel('Predicted Values')
-    ax.set_title('Model Prediction vs Actual (Simulated)')
-    
-    st.pyplot(fig)
-    
-    # Show transferability factors
-    st.subheader("Key Transferability Factors")
-    
-    transferability = {
-        "Factor": ["Climate Conditions", "Regulatory Environment", "Water Availability", 
-                  "Energy Mix", "Labor Market", "Supply Chain Structure"],
-        "Taiwan Context": ["Humid subtropical", "Taiwan EPA regulations", "Abundant but regulated", 
-                          "Nuclear and coal dominant", "Dense skilled workforce", "Asia-centric"],
-        "Arizona Context": ["Hot desert", "US EPA and Arizona DEQ", "Water scarce region", 
-                           "Mix of renewables and natural gas", "Developing semiconductor workforce", "North America-centric"],
-        "Adjustment Need": ["High", "Medium", "High", "Medium", "Medium", "Low"]
-    }
-    
-    df_transfer = pd.DataFrame(transferability)
-    st.table(df_transfer)
+# Model Validation section removed as requested
 
 # Expected Outcomes page
 elif page == "Expected Outcomes":
