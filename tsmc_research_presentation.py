@@ -255,8 +255,8 @@ elif page == "Expected Outcomes":
 # Add a contact form at the bottom
 st.sidebar.markdown("---")
 st.sidebar.subheader("Contact Information")
-st.sidebar.markdown("Researcher Name: [Your Name]")
-st.sidebar.markdown("Email: [your.email@university.edu]")
-st.sidebar.markdown("Department: [Your Department]")
+st.sidebar.markdown("Researcher Name: [Dr. Aadhithiyan Subramaniyan]")
+st.sidebar.markdown("Email: [as3889@cornell.edu]")
+st.sidebar.markdown("Department: [Cornell University]")
 
 # Run this with: streamlit run tsmc_research_presentation.py
