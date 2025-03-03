@@ -91,7 +91,7 @@ try:
         dV_dt = params['r1'] * V * (1 - total_vehicles/params['K1']) * \
                 (1 - params['omega'] * ev_fraction) - params['tau'] * V * ev_fraction - \
                 params['epsilon'] * V
-        dB_dt = params['r2'] * B + params['beta1'] * params['k_C'] + \
+        dB_dt = params['r2'] * B + params['beta1'] * (params['k_C']+params['k_V']) + \
                 params['alpha1'] * params['tau'] * V * ev_fraction - params['gamma1'] * B
         dM_dt = params['phi1'] * V + params['phi2'] * B - params['eta'] * M
         dC_dt = (params['psi1'] * V + params['psi2'] * B) * M / total_vehicles - \
