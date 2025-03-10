@@ -1,143 +1,169 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-st.set_page_config(page_title="Traditional vs. Systems Dynamics Models", layout="wide")
+st.set_page_config(page_title="Highway Congestion Model", layout="wide")
 
-st.title("Carbon Pricing Model: Traditional vs. Systems Dynamics Approaches")
+st.title("Highway Expansion Paradox: Traditional vs. Systems Dynamics Approaches")
 st.write("""
 This application demonstrates the fundamental differences between traditional modeling approaches
-and systems dynamics modeling using a carbon pricing scenario in transportation.
+and systems dynamics modeling using the well-known "induced demand" phenomenon in transportation.
 """)
 
 # Sidebar controls
 st.sidebar.header("Model Parameters")
-initial_carbon_price = st.sidebar.slider("Initial Carbon Price ($/ton)", 10, 100, 30)
-time_horizon = st.sidebar.slider("Time Horizon (years)", 5, 30, 15)
-policy_change_year = st.sidebar.slider("Policy Change Year", 2, 10, 5)
-new_carbon_price = st.sidebar.slider("New Carbon Price After Policy Change ($/ton)", 
-                                    initial_carbon_price, 200, initial_carbon_price + 50)
+initial_lanes = st.sidebar.slider("Initial Number of Highway Lanes", 2, 6, 3)
+time_horizon = st.sidebar.slider("Time Horizon (years)", 5, 20, 10)
+expansion_year = st.sidebar.slider("Highway Expansion Year", 2, 5, 3)
+lane_increase = st.sidebar.slider("Number of Lanes Added", 1, 3, 2)
 
 # Traditional Model Parameters
-tech_adoption_rate = st.sidebar.slider("Technology Adoption Rate (%/year)", 1.0, 10.0, 3.0)
-price_elasticity = st.sidebar.slider("Price Elasticity of Emissions", -1.0, -0.1, -0.3, 0.1)
+traffic_growth_rate = st.sidebar.slider("Annual Traffic Growth Rate (%)", 1.0, 10.0, 3.0)
+capacity_per_lane = st.sidebar.slider("Capacity Per Lane (vehicles/hour)", 1000, 2500, 2000)
 
 # Systems Dynamics Parameters
-tech_learning_rate = st.sidebar.slider("Technology Learning Rate (%)", 5, 25, 15)
-behavioral_adaptation = st.sidebar.slider("Behavioral Adaptation Factor", 0.1, 2.0, 0.5, 0.1)
-investment_delay = st.sidebar.slider("Investment Delay (years)", 1, 5, 2)
+induced_demand_factor = st.sidebar.slider("Induced Demand Factor", 0.0, 2.0, 1.0, 0.1)
+land_use_delay = st.sidebar.slider("Land Use Change Delay (years)", 1, 5, 2)
+transit_mode_share = st.sidebar.slider("Initial Transit Mode Share (%)", 5, 30, 15)
 
 # Create time periods
 years = np.arange(1, time_horizon + 1)
 
-# Function to simulate traditional econometric model
-def traditional_model(carbon_price, time_periods, price_elasticity, tech_adoption_rate, policy_year, new_price):
-    emissions = np.zeros(time_periods)
-    prices = np.zeros(time_periods)
+# Function to simulate traditional traffic model
+def traditional_model(initial_lanes, expansion_year, lane_increase, time_horizon, traffic_growth_rate, capacity_per_lane):
+    capacity = np.zeros(time_horizon)
+    traffic_volume = np.zeros(time_horizon)
+    congestion_ratio = np.zeros(time_horizon)
+    travel_time = np.zeros(time_horizon)
+    lanes = np.zeros(time_horizon)
     
     # Initial conditions
-    base_emissions = 100  # Arbitrary base emissions
-    emissions[0] = base_emissions
-    prices[0] = carbon_price
+    lanes[0] = initial_lanes
+    capacity[0] = initial_lanes * capacity_per_lane
+    traffic_volume[0] = capacity[0] * 0.8  # Starting at 80% capacity
+    congestion_ratio[0] = traffic_volume[0] / capacity[0]
+    travel_time[0] = 30  # Base travel time in minutes
     
-    # Simple projection based on carbon price
-    for t in range(1, time_periods):
-        # Policy change
-        if t >= policy_year - 1:
-            prices[t] = new_price
+    # Simple projection
+    for t in range(1, time_horizon):
+        # Lane expansion
+        if t >= expansion_year - 1:
+            lanes[t] = initial_lanes + lane_increase
         else:
-            prices[t] = prices[t-1]
+            lanes[t] = lanes[t-1]
         
-        # Linear reduction from technology
-        tech_factor = 1 - (tech_adoption_rate/100) * t
+        # Update capacity
+        capacity[t] = lanes[t] * capacity_per_lane
         
-        # Price elasticity effect
-        price_factor = (prices[t] / prices[0]) ** price_elasticity
+        # Traffic grows at fixed rate, regardless of capacity
+        traffic_volume[t] = traffic_volume[0] * (1 + traffic_growth_rate/100) ** t
         
-        # Combined effect
-        emissions[t] = base_emissions * tech_factor * price_factor
+        # Calculate congestion and travel time
+        congestion_ratio[t] = traffic_volume[t] / capacity[t]
+        
+        # Simple travel time model - exponential increase when congestion ratio > 0.8
+        if congestion_ratio[t] > 0.8:
+            travel_time[t] = 30 * (1 + 2 * (congestion_ratio[t] - 0.8) ** 2)
+        else:
+            travel_time[t] = 30
     
-    return emissions, prices
+    return lanes, capacity, traffic_volume, congestion_ratio, travel_time
 
-# Function to simulate systems dynamics model
-def systems_dynamics_model(carbon_price, time_periods, price_elasticity, tech_learning_rate, 
-                          behavioral_adaptation, investment_delay, policy_year, new_price):
-    # Initialize arrays
-    emissions = np.zeros(time_periods)
-    prices = np.zeros(time_periods)
-    technology_level = np.zeros(time_periods)
-    investment = np.zeros(time_periods)
-    cumulative_investment = np.zeros(time_periods)
-    behavioral_change = np.zeros(time_periods)
+# Function to simulate systems dynamics model with induced demand
+def systems_dynamics_model(initial_lanes, expansion_year, lane_increase, time_horizon, traffic_growth_rate, 
+                          capacity_per_lane, induced_demand_factor, land_use_delay, transit_mode_share):
+    capacity = np.zeros(time_horizon)
+    traffic_volume = np.zeros(time_horizon)
+    congestion_ratio = np.zeros(time_horizon)
+    travel_time = np.zeros(time_horizon)
+    lanes = np.zeros(time_horizon)
+    land_use_intensity = np.zeros(time_horizon)
+    transit_share = np.zeros(time_horizon)
     
     # Initial conditions
-    base_emissions = 100  # Same base as traditional model
-    emissions[0] = base_emissions
-    prices[0] = carbon_price
-    technology_level[0] = 1.0  # Initial technology efficiency (normalized)
-    investment[0] = 0.1 * carbon_price  # Initial investment as function of price
-    cumulative_investment[0] = investment[0]
-    behavioral_change[0] = 1.0  # No initial behavioral change
+    lanes[0] = initial_lanes
+    capacity[0] = initial_lanes * capacity_per_lane
+    traffic_volume[0] = capacity[0] * 0.8  # Starting at 80% capacity
+    congestion_ratio[0] = traffic_volume[0] / capacity[0]
+    travel_time[0] = 30  # Base travel time in minutes
+    land_use_intensity[0] = 1.0  # Normalized initial land use intensity
+    transit_share[0] = transit_mode_share / 100  # Convert to decimal
     
     # Systems dynamics simulation with feedback loops
-    for t in range(1, time_periods):
-        # Policy change
-        if t >= policy_year - 1:
-            prices[t] = new_price
+    for t in range(1, time_horizon):
+        # Lane expansion
+        if t >= expansion_year - 1:
+            lanes[t] = initial_lanes + lane_increase
         else:
-            prices[t] = prices[t-1]
+            lanes[t] = lanes[t-1]
         
-        # Investment responds to carbon price with delay
-        if t >= investment_delay:
-            investment[t] = 0.1 * prices[t-investment_delay] * (1 + behavioral_change[t-1] * 0.5)
+        # Update capacity
+        capacity[t] = lanes[t] * capacity_per_lane
+        
+        # Travel time based on previous period's congestion
+        if congestion_ratio[t-1] > 0.8:
+            travel_time[t] = 30 * (1 + 2 * (congestion_ratio[t-1] - 0.8) ** 2)
         else:
-            investment[t] = 0.1 * prices[t] * (1 + behavioral_change[t-1] * 0.5)
+            travel_time[t] = 30
         
-        # Cumulative investment drives technology learning
-        cumulative_investment[t] = cumulative_investment[t-1] + investment[t]
+        # Land use responds to travel time with delay
+        if t > land_use_delay:
+            # If travel time decreased compared to previous periods, land use intensity increases
+            travel_time_change = travel_time[t-land_use_delay] / travel_time[max(0, t-land_use_delay-1)] - 1
+            land_use_intensity[t] = land_use_intensity[t-1] * (1 - induced_demand_factor * travel_time_change)
+        else:
+            land_use_intensity[t] = land_use_intensity[t-1]
         
-        # Technology improves based on cumulative investment (learning curve)
-        technology_level[t] = technology_level[t-1] * (1 - tech_learning_rate/100 * 
-                                                      np.log(cumulative_investment[t]/cumulative_investment[t-1] + 1))
+        # Transit share responds to road capacity and congestion
+        # More road capacity tends to reduce transit use, while congestion increases it
+        capacity_change = capacity[t] / capacity[t-1] - 1
+        transit_effect = -0.1 * capacity_change + 0.05 * (congestion_ratio[t-1] - 0.8) if congestion_ratio[t-1] > 0.8 else -0.1 * capacity_change
+        transit_share[t] = max(0.05, min(0.5, transit_share[t-1] * (1 + transit_effect)))
         
-        # Behavioral change responds to price signal and visible technology improvements
-        behavioral_change[t] = behavioral_change[t-1] * (1 + behavioral_adaptation * 
-                                                       (prices[t]/prices[t-1] - 1) * 
-                                                       (technology_level[t-1]/technology_level[t]))
+        # Base traffic growth plus induced demand effects
+        base_growth = traffic_volume[0] * (1 + traffic_growth_rate/100) ** t
+        induced_effect = 1.0 + (capacity[t] / capacity[max(0, t-1)] - 1) * induced_demand_factor
+        land_use_effect = land_use_intensity[t] / land_use_intensity[max(0, t-1)]
         
-        # Combined effects on emissions with feedback
-        emissions[t] = emissions[t-1] * technology_level[t] / technology_level[t-1] * behavioral_change[t]
+        # Calculate traffic volume with feedback effects
+        traffic_volume[t] = base_growth * induced_effect * land_use_effect * (1 - transit_share[t]) / (1 - transit_share[0])
+        
+        # Calculate congestion ratio
+        congestion_ratio[t] = traffic_volume[t] / capacity[t]
     
-    return emissions, prices, technology_level, investment, behavioral_change
+    return lanes, capacity, traffic_volume, congestion_ratio, travel_time, land_use_intensity, transit_share
 
 # Run the models
-traditional_emissions, traditional_prices = traditional_model(
-    initial_carbon_price, time_horizon, price_elasticity, tech_adoption_rate, 
-    policy_change_year, new_carbon_price
+trad_lanes, trad_capacity, trad_traffic, trad_congestion, trad_time = traditional_model(
+    initial_lanes, expansion_year, lane_increase, time_horizon, traffic_growth_rate, capacity_per_lane
 )
 
-sd_emissions, sd_prices, tech_level, investment, behavior = systems_dynamics_model(
-    initial_carbon_price, time_horizon, price_elasticity, tech_learning_rate,
-    behavioral_adaptation, investment_delay, policy_change_year, new_carbon_price
+sd_lanes, sd_capacity, sd_traffic, sd_congestion, sd_time, sd_land_use, sd_transit = systems_dynamics_model(
+    initial_lanes, expansion_year, lane_increase, time_horizon, traffic_growth_rate,
+    capacity_per_lane, induced_demand_factor, land_use_delay, transit_mode_share
 )
 
 # Create DataFrames for plotting
 traditional_df = pd.DataFrame({
     'Year': years,
-    'Carbon Price': traditional_prices,
-    'Emissions': traditional_emissions
+    'Lanes': trad_lanes,
+    'Capacity': trad_capacity,
+    'Traffic Volume': trad_traffic,
+    'Congestion Ratio': trad_congestion,
+    'Travel Time': trad_time
 })
 
 sd_df = pd.DataFrame({
     'Year': years,
-    'Carbon Price': sd_prices,
-    'Emissions': sd_emissions,
-    'Technology Level': tech_level,
-    'Investment': investment,
-    'Behavioral Change': behavior
+    'Lanes': sd_lanes,
+    'Capacity': sd_capacity,
+    'Traffic Volume': sd_traffic,
+    'Congestion Ratio': sd_congestion,
+    'Travel Time': sd_time,
+    'Land Use Intensity': sd_land_use,
+    'Transit Share': sd_transit
 })
 
 # Main content
@@ -146,111 +172,129 @@ st.header("Comparing Model Results")
 col1, col2 = st.columns(2)
 
 with col1:
-    st.subheader("Traditional Econometric Model")
+    st.subheader("Traditional Transportation Model")
     st.write("""
-    Traditional models typically use elasticities and linear trends to predict how
-    emissions respond to carbon prices. They often miss complex interactions and feedback loops.
+    Traditional models typically assume traffic grows at a fixed rate independent of
+    road capacity. They predict that adding lanes directly reduces congestion and travel time.
     """)
     
     # Create plotly figure for traditional model
     fig1 = make_subplots(specs=[[{"secondary_y": True}]])
     
     fig1.add_trace(
-        go.Scatter(x=years, y=traditional_emissions, name="Emissions", line=dict(color="red", width=3)),
+        go.Scatter(x=years, y=trad_traffic, name="Traffic Volume", line=dict(color="blue", width=3)),
         secondary_y=False,
     )
     
     fig1.add_trace(
-        go.Scatter(x=years, y=traditional_prices, name="Carbon Price", line=dict(color="blue", width=3, dash="dash")),
+        go.Scatter(x=years, y=trad_capacity, name="Road Capacity", line=dict(color="green", width=3, dash="dash")),
+        secondary_y=False,
+    )
+    
+    fig1.add_trace(
+        go.Scatter(x=years, y=trad_time, name="Travel Time", line=dict(color="red", width=3)),
         secondary_y=True,
     )
     
+    # Add a vertical line at expansion year
+    fig1.add_vline(x=expansion_year, line_width=2, line_dash="dash", line_color="gray")
+    fig1.add_annotation(x=expansion_year, y=max(trad_capacity)*1.1, text="Lane Expansion", showarrow=False)
+    
     fig1.update_layout(
-        title_text="Traditional Model: Emissions vs Carbon Price",
+        title_text="Traditional Model: Traffic vs Capacity",
         xaxis_title="Year",
     )
     
-    fig1.update_yaxes(title_text="Emissions (tons)", secondary_y=False)
-    fig1.update_yaxes(title_text="Carbon Price ($/ton)", secondary_y=True)
+    fig1.update_yaxes(title_text="Volume/Capacity (vehicles/hour)", secondary_y=False)
+    fig1.update_yaxes(title_text="Travel Time (minutes)", secondary_y=True)
     
     st.plotly_chart(fig1, use_container_width=True)
     
     st.write("""
     **Key Characteristics:**
-    - Linear relationships between variables
-    - Static response to price changes
-    - No emerging behaviors or feedback effects
-    - Missing delayed responses and adaptation
+    - Traffic growth is independent of road capacity
+    - Direct linear relationship between capacity and congestion
+    - Adding lanes always reduces travel time
+    - No feedback effects between infrastructure and demand
     """)
 
 with col2:
     st.subheader("Systems Dynamics Model")
     st.write("""
-    Systems dynamics captures feedback loops, delays, and non-linear relationships
-    in how the transportation system responds to carbon pricing over time.
+    Systems dynamics captures "induced demand" - the phenomenon where expanding roads
+    actually increases traffic, often negating congestion benefits. This occurs through
+    multiple feedback loops in the transportation system.
     """)
     
     # Create plotly figure for systems dynamics model
     fig2 = make_subplots(specs=[[{"secondary_y": True}]])
     
     fig2.add_trace(
-        go.Scatter(x=years, y=sd_emissions, name="Emissions", line=dict(color="red", width=3)),
+        go.Scatter(x=years, y=sd_traffic, name="Traffic Volume", line=dict(color="blue", width=3)),
         secondary_y=False,
     )
     
     fig2.add_trace(
-        go.Scatter(x=years, y=sd_prices, name="Carbon Price", line=dict(color="blue", width=3, dash="dash")),
+        go.Scatter(x=years, y=sd_capacity, name="Road Capacity", line=dict(color="green", width=3, dash="dash")),
+        secondary_y=False,
+    )
+    
+    fig2.add_trace(
+        go.Scatter(x=years, y=sd_time, name="Travel Time", line=dict(color="red", width=3)),
         secondary_y=True,
     )
     
+    # Add a vertical line at expansion year
+    fig2.add_vline(x=expansion_year, line_width=2, line_dash="dash", line_color="gray")
+    fig2.add_annotation(x=expansion_year, y=max(sd_capacity)*1.1, text="Lane Expansion", showarrow=False)
+    
     fig2.update_layout(
-        title_text="Systems Dynamics Model: Emissions vs Carbon Price",
+        title_text="Systems Dynamics Model: Traffic vs Capacity",
         xaxis_title="Year",
     )
     
-    fig2.update_yaxes(title_text="Emissions (tons)", secondary_y=False)
-    fig2.update_yaxes(title_text="Carbon Price ($/ton)", secondary_y=True)
+    fig2.update_yaxes(title_text="Volume/Capacity (vehicles/hour)", secondary_y=False)
+    fig2.update_yaxes(title_text="Travel Time (minutes)", secondary_y=True)
     
     st.plotly_chart(fig2, use_container_width=True)
     
     st.write("""
     **Key Characteristics:**
-    - Feedback loops between price, technology, and behavior
-    - Time delays in investment and technology adoption
-    - Non-linear responses that change over time
-    - Emergent behaviors not apparent in the inputs
+    - Traffic volume responds to capacity changes (induced demand)
+    - Time delays between infrastructure changes and full effects
+    - Feedback loops between travel time, land use, and mode choice
+    - Non-linear relationships that change over time
     """)
 
 # Systems Dynamics Key Components
 st.header("Systems Dynamics: Revealing the Underlying Structure")
 
 st.write("""
-The power of systems dynamics lies in revealing the causal relationships and feedback loops
-that drive system behavior. Below we see how technology, investment, and behavioral changes
-interact over time in response to carbon pricing.
+The power of systems dynamics lies in revealing how feedback loops create counterintuitive
+system behavior. Below we see how land use patterns and transit usage respond to highway
+expansion, ultimately affecting traffic congestion.
 """)
 
-# Create 3-panel chart to show key drivers in systems dynamics model
-fig3 = make_subplots(rows=3, cols=1, 
-                    subplot_titles=("Technology Improvement", "Investment Response", "Behavioral Adaptation"))
+# Create 2-panel chart to show key drivers in systems dynamics model
+fig3 = make_subplots(rows=2, cols=1, 
+                    subplot_titles=("Land Use Intensity Response", "Transit Mode Share"))
 
 fig3.add_trace(
-    go.Scatter(x=years, y=tech_level, name="Technology Level", line=dict(color="green")),
+    go.Scatter(x=years, y=sd_land_use, name="Land Use Intensity", line=dict(color="purple")),
     row=1, col=1
 )
 
 fig3.add_trace(
-    go.Scatter(x=years, y=investment, name="Investment", line=dict(color="purple")),
+    go.Scatter(x=years, y=sd_transit, name="Transit Mode Share", line=dict(color="orange")),
     row=2, col=1
 )
 
-fig3.add_trace(
-    go.Scatter(x=years, y=behavior, name="Behavioral Change", line=dict(color="orange")),
-    row=3, col=1
-)
+# Add a vertical line at expansion year on both subplots
+fig3.add_vline(x=expansion_year, line_width=2, line_dash="dash", line_color="gray", row=1, col=1)
+fig3.add_vline(x=expansion_year, line_width=2, line_dash="dash", line_color="gray", row=2, col=1)
 
-fig3.update_layout(height=600, title_text="Key Drivers in the Systems Dynamics Model")
-fig3.update_xaxes(title_text="Year", row=3, col=1)
+fig3.update_layout(height=500, title_text="Key Feedback Mechanisms in the Systems Dynamics Model")
+fig3.update_xaxes(title_text="Year", row=2, col=1)
 
 st.plotly_chart(fig3, use_container_width=True)
 
@@ -261,40 +305,44 @@ col1, col2 = st.columns(2)
 
 with col1:
     st.subheader("Traditional Model Results")
-    diff_trad = round(((traditional_emissions[-1] / traditional_emissions[0]) - 1) * 100, 1)
-    st.write(f"**Final Emissions Change: {diff_trad}%**")
-    st.write(f"**Carbon Price in Year {time_horizon}: ${traditional_prices[-1]:.2f}/ton**")
+    congestion_change = round(((trad_congestion[-1] / trad_congestion[expansion_year-1]) - 1) * 100, 1)
+    travel_time_change = round(((trad_time[-1] / trad_time[expansion_year-1]) - 1) * 100, 1)
+    
+    st.write(f"**Congestion Ratio Change After Expansion: {congestion_change}%**")
+    st.write(f"**Travel Time Change After Expansion: {travel_time_change}%**")
     st.write("""
-    The traditional model shows a relatively straightforward relationship between
-    carbon price and emissions reduction. It assumes a constant rate of technology
-    adoption and a fixed elasticity of response to price changes.
+    The traditional model predicts that adding lanes directly reduces congestion
+    and improves travel times. It assumes traffic growth is independent of road 
+    capacity, leading to linear and predictable improvements.
     """)
 
 with col2:
     st.subheader("Systems Dynamics Results")
-    diff_sd = round(((sd_emissions[-1] / sd_emissions[0]) - 1) * 100, 1)
-    st.write(f"**Final Emissions Change: {diff_sd}%**")
-    st.write(f"**Carbon Price in Year {time_horizon}: ${sd_prices[-1]:.2f}/ton**")
+    sd_congestion_change = round(((sd_congestion[-1] / sd_congestion[expansion_year-1]) - 1) * 100, 1)
+    sd_travel_time_change = round(((sd_time[-1] / sd_time[expansion_year-1]) - 1) * 100, 1)
+    
+    st.write(f"**Congestion Ratio Change After Expansion: {sd_congestion_change}%**")
+    st.write(f"**Travel Time Change After Expansion: {sd_travel_time_change}%**")
     st.write("""
-    The systems dynamics model reveals how the same carbon price can lead to
-    different outcomes due to reinforcing feedback loops, delayed investments,
-    and non-linear technology learning curves. These dynamics are crucial for
-    effective policy design but are typically missed by traditional models.
+    The systems dynamics model reveals how adding lanes can counterintuitively 
+    increase congestion through induced demand. Initial travel time improvements
+    trigger changes in land use and mode choice that ultimately generate more traffic,
+    potentially negating the benefits of expansion.
     """)
 
-st.subheader("Why These Differences Matter for Policy")
+st.subheader("Why These Differences Matter for Transportation Policy")
 st.write("""
-1. **Policy Design**: Systems dynamics suggests that the timing and structure of carbon pricing
-   matters as much as the price level itself.
+1. **The Induced Demand Paradox**: Systems dynamics explains why highway expansion often fails
+   to reduce congestion long-term - a finding consistently observed in real-world studies.
 
-2. **Implementation Strategy**: Understanding delays and feedback loops helps design more
-   effective implementation strategies that account for system inertia.
+2. **Policy Design**: Understanding feedback loops helps design more effective transportation
+   policies that consider both infrastructure and demand management.
 
-3. **Intervention Points**: Systems dynamics reveals high-leverage intervention points that
-   may not be apparent in traditional models.
+3. **Integrated Planning**: The systems approach highlights the importance of coordinating
+   transportation infrastructure with land use planning and transit investments.
 
-4. **Unexpected Outcomes**: The systems approach helps anticipate unintended consequences and
-   counterintuitive system behaviors that traditional models often miss.
+4. **Long-term Outcomes**: Traditional models often overestimate the benefits of highway expansion
+   by failing to account for the systemic responses that occur over time.
 """)
 
 st.markdown("---")
