@@ -4,299 +4,238 @@ import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-st.set_page_config(page_title="Highway Congestion Model", layout="wide")
+st.set_page_config(page_title="Bathtub Model", layout="wide")
 
-st.title("Highway Expansion Paradox: Traditional vs. Systems Dynamics Approaches")
+st.title("The Bathtub Model: Traditional vs. Systems Dynamics")
 st.write("""
-This application demonstrates the fundamental differences between traditional modeling approaches
-and systems dynamics modeling using the well-known "induced demand" phenomenon in transportation.
+This simple application demonstrates the fundamental difference between traditional modeling approaches
+and systems dynamics using a bathtub as an intuitive example everyone can understand.
 """)
 
 # Sidebar controls
 st.sidebar.header("Model Parameters")
-initial_lanes = st.sidebar.slider("Initial Number of Highway Lanes", 2, 6, 3)
-time_horizon = st.sidebar.slider("Time Horizon (years)", 5, 20, 10)
-expansion_year = st.sidebar.slider("Highway Expansion Year", 2, 5, 3)
-lane_increase = st.sidebar.slider("Number of Lanes Added", 1, 3, 2)
-
-# Traditional Model Parameters
-traffic_growth_rate = st.sidebar.slider("Annual Traffic Growth Rate (%)", 1.0, 10.0, 3.0)
-capacity_per_lane = st.sidebar.slider("Capacity Per Lane (vehicles/hour)", 1000, 2500, 2000)
+inflow_rate = st.sidebar.slider("Water Inflow Rate (liters/minute)", 5, 20, 10)
+initial_outflow = st.sidebar.slider("Initial Drain Size (liters/minute)", 5, 15, 8)
+time_horizon = st.sidebar.slider("Time (minutes)", 5, 30, 15)
+intervention_time = st.sidebar.slider("When We Adjust the Drain (minute)", 2, 10, 5)
+new_outflow = st.sidebar.slider("New Drain Size (liters/minute)", 5, 25, 12)
 
 # Systems Dynamics Parameters
-induced_demand_factor = st.sidebar.slider("Induced Demand Factor", 0.0, 2.0, 1.0, 0.1)
-land_use_delay = st.sidebar.slider("Land Use Change Delay (years)", 1, 5, 2)
-transit_mode_share = st.sidebar.slider("Initial Transit Mode Share (%)", 5, 30, 15)
+drain_delay = st.sidebar.slider("Drain Adjustment Delay (minutes)", 0, 3, 1)
 
 # Create time periods
-years = np.arange(1, time_horizon + 1)
+minutes = np.arange(0, time_horizon + 1)
 
-# Function to simulate traditional traffic model
-def traditional_model(initial_lanes, expansion_year, lane_increase, time_horizon, traffic_growth_rate, capacity_per_lane):
-    capacity = np.zeros(time_horizon)
-    traffic_volume = np.zeros(time_horizon)
-    congestion_ratio = np.zeros(time_horizon)
-    travel_time = np.zeros(time_horizon)
-    lanes = np.zeros(time_horizon)
+# Function to simulate traditional model
+def traditional_model(inflow, initial_outflow, new_outflow, intervention_time, time_horizon):
+    water_level = np.zeros(time_horizon + 1)
+    outflow = np.zeros(time_horizon + 1)
     
     # Initial conditions
-    lanes[0] = initial_lanes
-    capacity[0] = initial_lanes * capacity_per_lane
-    traffic_volume[0] = capacity[0] * 0.8  # Starting at 80% capacity
-    congestion_ratio[0] = traffic_volume[0] / capacity[0]
-    travel_time[0] = 30  # Base travel time in minutes
+    water_level[0] = 0  # Start with empty bathtub
+    outflow[0] = initial_outflow
     
     # Simple projection
-    for t in range(1, time_horizon):
-        # Lane expansion
-        if t >= expansion_year - 1:
-            lanes[t] = initial_lanes + lane_increase
+    for t in range(1, time_horizon + 1):
+        # Change in outflow occurs immediately at intervention time
+        if t >= intervention_time:
+            outflow[t] = new_outflow
         else:
-            lanes[t] = lanes[t-1]
+            outflow[t] = initial_outflow
         
-        # Update capacity
-        capacity[t] = lanes[t] * capacity_per_lane
+        # Water level changes based on net flow
+        net_flow = inflow - outflow[t]
+        water_level[t] = water_level[t-1] + net_flow
         
-        # Traffic grows at fixed rate, regardless of capacity
-        traffic_volume[t] = traffic_volume[0] * (1 + traffic_growth_rate/100) ** t
-        
-        # Calculate congestion and travel time
-        congestion_ratio[t] = traffic_volume[t] / capacity[t]
-        
-        # Simple travel time model - exponential increase when congestion ratio > 0.8
-        if congestion_ratio[t] > 0.8:
-            travel_time[t] = 30 * (1 + 2 * (congestion_ratio[t] - 0.8) ** 2)
-        else:
-            travel_time[t] = 30
+        # Water level can't go below zero
+        if water_level[t] < 0:
+            water_level[t] = 0
     
-    return lanes, capacity, traffic_volume, congestion_ratio, travel_time
+    return water_level, outflow
 
-# Function to simulate systems dynamics model with induced demand
-def systems_dynamics_model(initial_lanes, expansion_year, lane_increase, time_horizon, traffic_growth_rate, 
-                          capacity_per_lane, induced_demand_factor, land_use_delay, transit_mode_share):
-    capacity = np.zeros(time_horizon)
-    traffic_volume = np.zeros(time_horizon)
-    congestion_ratio = np.zeros(time_horizon)
-    travel_time = np.zeros(time_horizon)
-    lanes = np.zeros(time_horizon)
-    land_use_intensity = np.zeros(time_horizon)
-    transit_share = np.zeros(time_horizon)
+# Function to simulate systems dynamics model
+def systems_dynamics_model(inflow, initial_outflow, new_outflow, intervention_time, time_horizon, drain_delay):
+    water_level = np.zeros(time_horizon + 1)
+    outflow = np.zeros(time_horizon + 1)
+    target_outflow = np.zeros(time_horizon + 1)
     
     # Initial conditions
-    lanes[0] = initial_lanes
-    capacity[0] = initial_lanes * capacity_per_lane
-    traffic_volume[0] = capacity[0] * 0.8  # Starting at 80% capacity
-    congestion_ratio[0] = traffic_volume[0] / capacity[0]
-    travel_time[0] = 30  # Base travel time in minutes
-    land_use_intensity[0] = 1.0  # Normalized initial land use intensity
-    transit_share[0] = transit_mode_share / 100  # Convert to decimal
+    water_level[0] = 0  # Start with empty bathtub
+    outflow[0] = initial_outflow
+    target_outflow[0] = initial_outflow
     
-    # Systems dynamics simulation with feedback loops
-    for t in range(1, time_horizon):
-        # Lane expansion
-        if t >= expansion_year - 1:
-            lanes[t] = initial_lanes + lane_increase
+    # Systems dynamics simulation with stocks and flows
+    for t in range(1, time_horizon + 1):
+        # Decision to change the drain size happens at intervention time
+        if t >= intervention_time:
+            target_outflow[t] = new_outflow
         else:
-            lanes[t] = lanes[t-1]
+            target_outflow[t] = initial_outflow
         
-        # Update capacity
-        capacity[t] = lanes[t] * capacity_per_lane
+        # Actual outflow changes gradually due to delay in adjusting the drain
+        outflow_adjustment = (target_outflow[t] - outflow[t-1]) / max(1, drain_delay)
+        outflow[t] = outflow[t-1] + outflow_adjustment
         
-        # Travel time based on previous period's congestion
-        if congestion_ratio[t-1] > 0.8:
-            travel_time[t] = 30 * (1 + 2 * (congestion_ratio[t-1] - 0.8) ** 2)
-        else:
-            travel_time[t] = 30
+        # Water pressure affects outflow (feedback) - higher water level increases outflow
+        pressure_effect = 0.1 * max(0, water_level[t-1])  # Simple linear effect
+        actual_outflow = outflow[t] + pressure_effect
         
-        # Land use responds to travel time with delay
-        if t > land_use_delay:
-            # If travel time decreased compared to previous periods, land use intensity increases
-            travel_time_change = travel_time[t-land_use_delay] / travel_time[max(0, t-land_use_delay-1)] - 1
-            land_use_intensity[t] = land_use_intensity[t-1] * (1 - induced_demand_factor * travel_time_change)
-        else:
-            land_use_intensity[t] = land_use_intensity[t-1]
+        # Water level changes based on net flow
+        net_flow = inflow - actual_outflow
+        water_level[t] = water_level[t-1] + net_flow
         
-        # Transit share responds to road capacity and congestion
-        # More road capacity tends to reduce transit use, while congestion increases it
-        capacity_change = capacity[t] / capacity[t-1] - 1
-        transit_effect = -0.1 * capacity_change + 0.05 * (congestion_ratio[t-1] - 0.8) if congestion_ratio[t-1] > 0.8 else -0.1 * capacity_change
-        transit_share[t] = max(0.05, min(0.5, transit_share[t-1] * (1 + transit_effect)))
-        
-        # Base traffic growth plus induced demand effects
-        base_growth = traffic_volume[0] * (1 + traffic_growth_rate/100) ** t
-        induced_effect = 1.0 + (capacity[t] / capacity[max(0, t-1)] - 1) * induced_demand_factor
-        land_use_effect = land_use_intensity[t] / land_use_intensity[max(0, t-1)]
-        
-        # Calculate traffic volume with feedback effects
-        traffic_volume[t] = base_growth * induced_effect * land_use_effect * (1 - transit_share[t]) / (1 - transit_share[0])
-        
-        # Calculate congestion ratio
-        congestion_ratio[t] = traffic_volume[t] / capacity[t]
+        # Water level can't go below zero
+        if water_level[t] < 0:
+            water_level[t] = 0
     
-    return lanes, capacity, traffic_volume, congestion_ratio, travel_time, land_use_intensity, transit_share
+    return water_level, outflow, target_outflow
 
 # Run the models
-trad_lanes, trad_capacity, trad_traffic, trad_congestion, trad_time = traditional_model(
-    initial_lanes, expansion_year, lane_increase, time_horizon, traffic_growth_rate, capacity_per_lane
+trad_level, trad_outflow = traditional_model(
+    inflow_rate, initial_outflow, new_outflow, intervention_time, time_horizon
 )
 
-sd_lanes, sd_capacity, sd_traffic, sd_congestion, sd_time, sd_land_use, sd_transit = systems_dynamics_model(
-    initial_lanes, expansion_year, lane_increase, time_horizon, traffic_growth_rate,
-    capacity_per_lane, induced_demand_factor, land_use_delay, transit_mode_share
+sd_level, sd_outflow, sd_target = systems_dynamics_model(
+    inflow_rate, initial_outflow, new_outflow, intervention_time, time_horizon, drain_delay
 )
 
 # Create DataFrames for plotting
 traditional_df = pd.DataFrame({
-    'Year': years,
-    'Lanes': trad_lanes,
-    'Capacity': trad_capacity,
-    'Traffic Volume': trad_traffic,
-    'Congestion Ratio': trad_congestion,
-    'Travel Time': trad_time
+    'Minute': minutes,
+    'Water Level': trad_level,
+    'Outflow': trad_outflow,
+    'Inflow': inflow_rate
 })
 
 sd_df = pd.DataFrame({
-    'Year': years,
-    'Lanes': sd_lanes,
-    'Capacity': sd_capacity,
-    'Traffic Volume': sd_traffic,
-    'Congestion Ratio': sd_congestion,
-    'Travel Time': sd_time,
-    'Land Use Intensity': sd_land_use,
-    'Transit Share': sd_transit
+    'Minute': minutes,
+    'Water Level': sd_level,
+    'Outflow': sd_outflow,
+    'Target Outflow': sd_target,
+    'Inflow': inflow_rate
 })
 
 # Main content
+st.header("The Bathtub Analogy")
+st.write("""
+The bathtub is a classic systems dynamics example:
+- **Water inflow** (the faucet) represents inputs to the system
+- **Water level** (in the tub) represents accumulation or the "stock"
+- **Water outflow** (the drain) represents outputs from the system
+
+This simple system demonstrates fundamental concepts like stocks, flows, delays, and feedback.
+""")
+
 st.header("Comparing Model Results")
 
 col1, col2 = st.columns(2)
 
 with col1:
-    st.subheader("Traditional Transportation Model")
+    st.subheader("Traditional Model")
     st.write("""
-    Traditional models typically assume traffic grows at a fixed rate independent of
-    road capacity. They predict that adding lanes directly reduces congestion and travel time.
+    Traditional models typically assume:
+    - Changes take effect immediately
+    - No delays between decision and implementation
+    - Fixed relationships between variables
+    - No feedback from outputs back to the system
     """)
     
     # Create plotly figure for traditional model
     fig1 = make_subplots(specs=[[{"secondary_y": True}]])
     
     fig1.add_trace(
-        go.Scatter(x=years, y=trad_traffic, name="Traffic Volume", line=dict(color="blue", width=3)),
+        go.Scatter(x=minutes, y=trad_level, name="Water Level", line=dict(color="blue", width=3)),
         secondary_y=False,
     )
     
     fig1.add_trace(
-        go.Scatter(x=years, y=trad_capacity, name="Road Capacity", line=dict(color="green", width=3, dash="dash")),
-        secondary_y=False,
-    )
-    
-    fig1.add_trace(
-        go.Scatter(x=years, y=trad_time, name="Travel Time", line=dict(color="red", width=3)),
+        go.Scatter(x=minutes, y=[inflow_rate] * len(minutes), name="Inflow Rate", 
+                  line=dict(color="green", width=2, dash="dash")),
         secondary_y=True,
     )
     
-    # Add a vertical line at expansion year
-    fig1.add_vline(x=expansion_year, line_width=2, line_dash="dash", line_color="gray")
-    fig1.add_annotation(x=expansion_year, y=max(trad_capacity)*1.1, text="Lane Expansion", showarrow=False)
-    
-    fig1.update_layout(
-        title_text="Traditional Model: Traffic vs Capacity",
-        xaxis_title="Year",
+    fig1.add_trace(
+        go.Scatter(x=minutes, y=trad_outflow, name="Outflow Rate", line=dict(color="red", width=2)),
+        secondary_y=True,
     )
     
-    fig1.update_yaxes(title_text="Volume/Capacity (vehicles/hour)", secondary_y=False)
-    fig1.update_yaxes(title_text="Travel Time (minutes)", secondary_y=True)
+    # Add a vertical line at intervention time
+    fig1.add_vline(x=intervention_time, line_width=2, line_dash="dash", line_color="gray")
+    fig1.add_annotation(x=intervention_time, y=max(trad_level)*1.1, text="Drain Adjustment", showarrow=False)
+    
+    fig1.update_layout(
+        title_text="Traditional Model: Bathtub Filling and Draining",
+        xaxis_title="Time (minutes)",
+    )
+    
+    fig1.update_yaxes(title_text="Water Level (liters)", secondary_y=False)
+    fig1.update_yaxes(title_text="Flow Rate (liters/minute)", secondary_y=True)
     
     st.plotly_chart(fig1, use_container_width=True)
     
     st.write("""
     **Key Characteristics:**
-    - Traffic growth is independent of road capacity
-    - Direct linear relationship between capacity and congestion
-    - Adding lanes always reduces travel time
-    - No feedback effects between infrastructure and demand
+    - Drain adjustment happens instantly
+    - No relationship between water level and drain effectiveness
+    - Perfectly linear relationships
+    - No time delays
     """)
 
 with col2:
     st.subheader("Systems Dynamics Model")
     st.write("""
-    Systems dynamics captures "induced demand" - the phenomenon where expanding roads
-    actually increases traffic, often negating congestion benefits. This occurs through
-    multiple feedback loops in the transportation system.
+    Systems dynamics modeling recognizes:
+    - Changes take time to implement
+    - Delays exist between decisions and effects
+    - Feedback loops change how systems behave
+    - Stocks accumulate over time
     """)
     
     # Create plotly figure for systems dynamics model
     fig2 = make_subplots(specs=[[{"secondary_y": True}]])
     
     fig2.add_trace(
-        go.Scatter(x=years, y=sd_traffic, name="Traffic Volume", line=dict(color="blue", width=3)),
+        go.Scatter(x=minutes, y=sd_level, name="Water Level", line=dict(color="blue", width=3)),
         secondary_y=False,
     )
     
     fig2.add_trace(
-        go.Scatter(x=years, y=sd_capacity, name="Road Capacity", line=dict(color="green", width=3, dash="dash")),
-        secondary_y=False,
-    )
-    
-    fig2.add_trace(
-        go.Scatter(x=years, y=sd_time, name="Travel Time", line=dict(color="red", width=3)),
+        go.Scatter(x=minutes, y=[inflow_rate] * len(minutes), name="Inflow Rate", 
+                  line=dict(color="green", width=2, dash="dash")),
         secondary_y=True,
     )
     
-    # Add a vertical line at expansion year
-    fig2.add_vline(x=expansion_year, line_width=2, line_dash="dash", line_color="gray")
-    fig2.add_annotation(x=expansion_year, y=max(sd_capacity)*1.1, text="Lane Expansion", showarrow=False)
-    
-    fig2.update_layout(
-        title_text="Systems Dynamics Model: Traffic vs Capacity",
-        xaxis_title="Year",
+    fig2.add_trace(
+        go.Scatter(x=minutes, y=sd_outflow, name="Actual Outflow", line=dict(color="red", width=2)),
+        secondary_y=True,
     )
     
-    fig2.update_yaxes(title_text="Volume/Capacity (vehicles/hour)", secondary_y=False)
-    fig2.update_yaxes(title_text="Travel Time (minutes)", secondary_y=True)
+    fig2.add_trace(
+        go.Scatter(x=minutes, y=sd_target, name="Target Outflow", line=dict(color="purple", width=2, dash="dot")),
+        secondary_y=True,
+    )
+    
+    # Add a vertical line at intervention time
+    fig2.add_vline(x=intervention_time, line_width=2, line_dash="dash", line_color="gray")
+    fig2.add_annotation(x=intervention_time, y=max(sd_level)*1.1, text="Drain Adjustment Decision", showarrow=False)
+    
+    fig2.update_layout(
+        title_text="Systems Dynamics Model: Bathtub with Delays & Feedback",
+        xaxis_title="Time (minutes)",
+    )
+    
+    fig2.update_yaxes(title_text="Water Level (liters)", secondary_y=False)
+    fig2.update_yaxes(title_text="Flow Rate (liters/minute)", secondary_y=True)
     
     st.plotly_chart(fig2, use_container_width=True)
     
     st.write("""
     **Key Characteristics:**
-    - Traffic volume responds to capacity changes (induced demand)
-    - Time delays between infrastructure changes and full effects
-    - Feedback loops between travel time, land use, and mode choice
-    - Non-linear relationships that change over time
+    - Time delay between deciding to adjust the drain and completing the adjustment
+    - Water pressure affects drain performance (feedback)
+    - Nonlinear relationships emerge
+    - Water level (stock) accumulates over time
     """)
-
-# Systems Dynamics Key Components
-st.header("Systems Dynamics: Revealing the Underlying Structure")
-
-st.write("""
-The power of systems dynamics lies in revealing how feedback loops create counterintuitive
-system behavior. Below we see how land use patterns and transit usage respond to highway
-expansion, ultimately affecting traffic congestion.
-""")
-
-# Create 2-panel chart to show key drivers in systems dynamics model
-fig3 = make_subplots(rows=2, cols=1, 
-                    subplot_titles=("Land Use Intensity Response", "Transit Mode Share"))
-
-fig3.add_trace(
-    go.Scatter(x=years, y=sd_land_use, name="Land Use Intensity", line=dict(color="purple")),
-    row=1, col=1
-)
-
-fig3.add_trace(
-    go.Scatter(x=years, y=sd_transit, name="Transit Mode Share", line=dict(color="orange")),
-    row=2, col=1
-)
-
-# Add a vertical line at expansion year on both subplots
-fig3.add_vline(x=expansion_year, line_width=2, line_dash="dash", line_color="gray", row=1, col=1)
-fig3.add_vline(x=expansion_year, line_width=2, line_dash="dash", line_color="gray", row=2, col=1)
-
-fig3.update_layout(height=500, title_text="Key Feedback Mechanisms in the Systems Dynamics Model")
-fig3.update_xaxes(title_text="Year", row=2, col=1)
-
-st.plotly_chart(fig3, use_container_width=True)
 
 # Key insights
 st.header("Key Insights")
@@ -305,45 +244,44 @@ col1, col2 = st.columns(2)
 
 with col1:
     st.subheader("Traditional Model Results")
-    congestion_change = round(((trad_congestion[-1] / trad_congestion[expansion_year-1]) - 1) * 100, 1)
-    travel_time_change = round(((trad_time[-1] / trad_time[expansion_year-1]) - 1) * 100, 1)
+    final_level = round(trad_level[-1], 1)
+    peak_level = round(max(trad_level), 1)
     
-    st.write(f"**Congestion Ratio Change After Expansion: {congestion_change}%**")
-    st.write(f"**Travel Time Change After Expansion: {travel_time_change}%**")
+    st.write(f"**Peak Water Level: {peak_level} liters**")
+    st.write(f"**Final Water Level: {final_level} liters**")
     st.write("""
-    The traditional model predicts that adding lanes directly reduces congestion
-    and improves travel times. It assumes traffic growth is independent of road 
-    capacity, leading to linear and predictable improvements.
+    The traditional model shows an immediate response to the drain adjustment.
+    The relationship between inputs and outputs is direct and predictable.
     """)
 
 with col2:
     st.subheader("Systems Dynamics Results")
-    sd_congestion_change = round(((sd_congestion[-1] / sd_congestion[expansion_year-1]) - 1) * 100, 1)
-    sd_travel_time_change = round(((sd_time[-1] / sd_time[expansion_year-1]) - 1) * 100, 1)
+    sd_final_level = round(sd_level[-1], 1)
+    sd_peak_level = round(max(sd_level), 1)
     
-    st.write(f"**Congestion Ratio Change After Expansion: {sd_congestion_change}%**")
-    st.write(f"**Travel Time Change After Expansion: {sd_travel_time_change}%**")
+    st.write(f"**Peak Water Level: {sd_peak_level} liters**")
+    st.write(f"**Final Water Level: {sd_final_level} liters**")
     st.write("""
-    The systems dynamics model reveals how adding lanes can counterintuitively 
-    increase congestion through induced demand. Initial travel time improvements
-    trigger changes in land use and mode choice that ultimately generate more traffic,
-    potentially negating the benefits of expansion.
+    The systems dynamics model shows a delayed response to the drain adjustment.
+    Feedback loops between water level and outflow create more complex behavior.
     """)
 
-st.subheader("Why These Differences Matter for Transportation Policy")
+st.subheader("How This Relates to Real-World Systems")
 st.write("""
-1. **The Induced Demand Paradox**: Systems dynamics explains why highway expansion often fails
-   to reduce congestion long-term - a finding consistently observed in real-world studies.
+This simple bathtub example illustrates fundamental principles that apply to complex real-world systems:
 
-2. **Policy Design**: Understanding feedback loops helps design more effective transportation
-   policies that consider both infrastructure and demand management.
+1. **Stocks and Flows**: Like water in a bathtub, many things accumulate (carbon in atmosphere, 
+   vehicles on roads, knowledge in organizations)
 
-3. **Integrated Planning**: The systems approach highlights the importance of coordinating
-   transportation infrastructure with land use planning and transit investments.
+2. **Delays**: Changes don't happen instantly in real systems (policy implementation takes time,
+   infrastructure takes years to build, behavior changes gradually)
 
-4. **Long-term Outcomes**: Traditional models often overestimate the benefits of highway expansion
-   by failing to account for the systemic responses that occur over time.
+3. **Feedback Loops**: System outputs often influence inputs (traffic congestion affects route choices,
+   prices affect demand, policy outcomes affect future policies)
+
+4. **Understanding vs. Prediction**: Traditional models might predict certain values, but systems dynamics
+   explains WHY systems behave as they do and HOW we might change that behavior
 """)
 
 st.markdown("---")
-st.caption("Note: This simulation is simplified for demonstration purposes. Real-world models would include additional variables and interactions.")
+st.caption("This simple bathtub model demonstrates why systems dynamics provides deeper understanding than traditional modeling approaches.")
